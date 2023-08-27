@@ -1,4 +1,5 @@
-import renderSignupForm from "./signup.js";
+import renderAuthForms from "./authForms.js";
+import renderLogout from "./logout.js";
 
 function renderHeader() {
     const header = document.getElementById("header-nav");
@@ -12,9 +13,6 @@ function renderHeader() {
     const activities = document.createElement("li");
     const teams = document.createElement("li");
     const login = document.createElement("li");
-
-    //When user is logged in, show message
-    const loginInfo = document.createElement("li");
 
     // Create a logo header
     const logoHeader = document.createElement("h1");
@@ -35,7 +33,40 @@ function renderHeader() {
     // Add event listeners to menu items
     // activities.addEventListener("click", renderActivities);
     // teams.addEventListener("click", renderTeams);
-    login.addEventListener("click", renderSignupForm);
+    login.addEventListener("click", renderAuthForms);
+
+    //Check login status and update UI
+    loginStatus();
+}
+
+//Check login status and update UI
+function loginStatus() {
+    axios
+        .get("/api/sessions/status")
+        .then((response) => {
+            const { name } = response.data;
+
+            const logout = document.createElement("li");
+            logout.textContent = "Logout";
+            logout.addEventListener("click", renderLogout);
+
+            const loginInfo = document.createElement("li");
+            loginInfo.textContent = `Logged in as ${name}`;
+
+            const navUl = document.querySelector(".nav-list");
+            navUl.append(loginInfo, logout);
+        })
+        .catch((err) => {
+            if (err.response && err.response.status === 401) {
+                console.log("User is not logged in");
+                loginInfo.textContent = "";
+            } else {
+                console.warn(
+                    "An error occurred while checking login status:",
+                    err
+                );
+            }
+        });
 }
 
 export default renderHeader;

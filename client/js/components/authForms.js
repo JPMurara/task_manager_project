@@ -1,11 +1,21 @@
-function renderSignupForm() {
+import renderHeader from "./header.js";
+
+function renderAuthForms() {
     const page = document.getElementById("page");
 
     const heading = document.createElement("h1");
-    heading.textContent = "Sign Up";
+    heading.textContent = "Welcome!";
 
-    const form = document.createElement("form");
-    form.innerHTML = `
+    //Div to store login and signup forms
+    const formsDiv = document.createElement("div");
+    formsDiv.style.display = "flex";
+    formsDiv.style.justifyContent = "space-around";
+
+    //SIGN UP FORM
+    const signupForm = document.createElement("form");
+    signupForm.id = "signupForm";
+    signupForm.innerHTML = `
+            <h2>Sign Up</h2>
             <span id="message"></span><br>
 
             <label for="name">Name:</label>
@@ -29,6 +39,34 @@ function renderSignupForm() {
             <button type="submit">Signup</button>
         `;
 
+    //LOGIN FORM
+    const loginForm = document.createElement("form");
+    loginForm.id = "loginForm";
+    loginForm.innerHTML = `
+        <h2>Login</h2>
+        <span id="message"></span><br>
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email"></input><br>
+        
+
+        <label for="password">Password: </label>
+        <input type="password" name="password" id="password"><br>
+        
+        <button type="submit">Login</button>
+    `;
+
+    //Replace the content of the page
+    formsDiv.appendChild(signupForm);
+    formsDiv.appendChild(loginForm);
+    page.replaceChildren(heading, formsDiv);
+
+    // Attach event listeners
+    signupEventListener(signupForm);
+    loginEventListener(loginForm);
+}
+
+function signupEventListener(form) {
     //Form Submission
     form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -80,8 +118,48 @@ function renderSignupForm() {
                 }
             });
     });
-    //Replace the content of the page
-    page.replaceChildren(heading, form);
+}
+
+function loginEventListener(form) {
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        const data = {
+            email: formData.get("email"),
+            password: formData.get("password"),
+        };
+
+        console.log(data);
+        console.log(JSON.stringify(data));
+
+        axios
+            .post("/api/sessions", data)
+            .then((response) => {
+                console.log(response.data.message);
+                console.log(response);
+                //RENDER DASHBOARD
+                renderHeader();
+            })
+            .catch((error) => {
+                // Handle errors from the server response
+                const message = document.getElementById("message");
+                const errorMessage = error.response.data.message;
+                if (error.response) {
+                    if (error.response.status === 400) {
+                        message.innerText = errorMessage;
+                        console.log("Error", errorMessage);
+                    } else {
+                        message.innerText = errorMessage;
+                        console.log("An error occurred: ", errorMessage);
+                    }
+                } else {
+                    message.innerText = errorMessage;
+                    console.log("An error occurred: ", errorMessage);
+                }
+            });
+    });
 }
 
 //Function to check letters, numbers and symbols
@@ -92,4 +170,4 @@ function isStrongPassword(password) {
 }
 
 //Export render signup form
-export default renderSignupForm;
+export default renderAuthForms;
