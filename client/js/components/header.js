@@ -1,3 +1,5 @@
+import renderSignupForm from "./signup.js";
+
 function renderHeader() {
     const header = document.getElementById("header-nav");
 
@@ -33,7 +35,7 @@ function renderHeader() {
     // Add event listeners to menu items
     // activities.addEventListener("click", renderActivities);
     // teams.addEventListener("click", renderTeams);
-    // login.addEventListener("click", renderLoginForm);
+    login.addEventListener("click", renderSignupForm);
 }
 
 export default renderHeader;

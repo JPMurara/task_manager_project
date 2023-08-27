@@ -1,7 +1,7 @@
-//Make connection with Scavenger Hunt database
+//Make connection with Task Manager database
 const pg = require("pg");
 const db = new pg.Pool({
-    database: "scavenger_hunt",
+    database: "task_manager",
 });
 
 //Export db to be use in other files
