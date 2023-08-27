@@ -12,8 +12,8 @@ const pgSession = require("connect-pg-simple")(expressSession);
 const db = require("./database/db.js");
 
 //Connect to controllers
-const usersRoute = require("./controllers/users.js");
-const sessionsRoute = require("./controllers/sessions.js");
+// const usersRoute = require("./controllers/users.js");
+// const sessionsRoute = require("./controllers/sessions.js");
 
 app.use(
     expressSession({
@@ -40,8 +40,8 @@ app.use(express.static("client"));
 app.use(express.json());
 
 //Connect to the API routes
-app.use("/api/users", usersRoute);
-app.use("/api/sessions", sessionsRoute);
+// app.use("/api/users", usersRoute);
+// app.use("/api/sessions", sessionsRoute);
 
 //Error middleware
 app.use((err, req, res, next) => {
