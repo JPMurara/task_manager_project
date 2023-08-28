@@ -42,3 +42,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     team_id INTEGER REFERENCES teams(team_id)
 );
+
+CREATE TABLE IF NOT EXISTS activity (
+    activity_id SERIAL PRIMARY KEY,
+    activity_name VARCHAR(250) NOT NULL,
+);
