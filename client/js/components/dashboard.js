@@ -3,19 +3,22 @@ import renderHeader from "./header.js";
 function renderDashboard() {
   const page = document.getElementById("page");
 
-  const header = `
+  const dashboardHeader = document.createElement("header");
+  dashboardHeader.id = "dashboardHeader";
+  dashboardHeader.innerHTML = `
     <header id="dashboardHeader">
     <h1>Dashboard</h1>
     <p>Project Name PLACEHOLDER</p>
     </header>
   `;
-  page.append(header);
 
   renderTasks();
 
   // dashboard section
   const dashboard = document.createElement("section");
   dashboard.id = "dashboardContainer";
+
+  page.replaceChildren(dashboardHeader, dashboard);
 }
 
 function renderTasks() {
