@@ -10,25 +10,8 @@ function renderDashboard() {
     <h1>Dashboard</h1>
     <p>Project Name PLACEHOLDER</p>
     </header>
-  `;
 
-  renderTasks();
-
-  // dashboard section
-  const dashboard = document.createElement("section");
-  dashboard.id = "dashboardContainer";
-
-  page.replaceChildren(dashboardHeader, dashboard);
-}
-
-function renderTasks() {
-  axios.get("http://localhost:3000/api/openai").then((res) => {
-    //   change the .tasks according with what was built in the BE
-    const tasks = res.data.tasks;
-    const page = document.getElementById("page");
-    const dashboardContainer = document.createElement("section");
-    dashboardContainer.id = "dashboardContainer";
-    dashboardContainer.innerHTML = `
+    <section id="DashboardContainer">
         <div id="todoContainer">
             <div class="titleContainer">
                 <p class="status">To Do</p>
@@ -61,8 +44,17 @@ function renderTasks() {
             <div id="completedTaskContainer">
             </div>
         </div>
+    </section>
   `;
 
+  page.replaceChildren(dashboardHeader);
+  renderTasks();
+}
+
+function renderTasks() {
+  axios.get("http://localhost:3000/api/openai").then((res) => {
+    //   change the .tasks according with what was built in the BE
+    const tasks = res.data.tasks;
     if (tasks) {
       const todoTasksContainer = document.getElementById("todoTasksContainer");
       tasks.forEach((el) => {
