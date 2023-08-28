@@ -23,12 +23,18 @@ CREATE TABLE IF NOT EXISTS members (
 CREATE TYPE task_status AS ENUM ('pending', 'in_progress', 'completed');
 CREATE TYPE priority AS ENUM ('low', 'medium', 'high');
 
+CREATE TABLE IF NOT EXISTS activity {
+    activity_id SERIAL PRIMARY KEY,
+    activity_name VARCHAR(250) NOT NULL,
+}
+
 CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
+    activity_id INTEGER REFERENCES activity(activity_id),
     task_name VARCHAR(20) NOT NULL,
     task_description TEXT,
-    tasks_status task_status NOT NULL,
-    task_priority priority NOT NULL,
+    tasks_status task_status,
+    task_priority priority,
     assigned_to INTEGER REFERENCES users(user_id),
     due_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
