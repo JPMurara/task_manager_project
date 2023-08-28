@@ -1,13 +1,15 @@
+CREATE DATABASE task_manager;
+
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    hash_password TEXT NOT NULL,
+    hash_password TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS teams (
     team_id SERIAL PRIMARY KEY,
-    team_name VARCHAR(255) NOT NULL,
+    team_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS members (
