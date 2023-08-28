@@ -11,9 +11,14 @@ const pgSession = require("connect-pg-simple")(expressSession);
 //Connect to database file
 const db = require("./database/db.js");
 
+//CROS
+const cors = require("cors");
+app.use(cors());
+
 //Connect to controllers
 const usersRoute = require("./controllers/users.js");
 const sessionsRoute = require("./controllers/sessions.js");
+const aiRoute = require("./controllers/openAI.js");
 
 app.use(
     expressSession({
@@ -42,6 +47,7 @@ app.use(express.json());
 //Connect to the API routes
 app.use("/api/users", usersRoute);
 app.use("/api/sessions", sessionsRoute);
+app.use("/api/openai", aiRoute);
 
 //Error middleware
 app.use((err, req, res, next) => {
