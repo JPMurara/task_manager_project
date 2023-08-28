@@ -73,3 +73,5 @@ function renderTasks() {
     }
   });
 }
+
+export default renderDashboard;
