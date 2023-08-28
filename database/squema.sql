@@ -25,6 +25,7 @@ CREATE TYPE priority AS ENUM ('low', 'medium', 'high');
 
 CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
+    activity_id INTEGER REFERENCES activity(activity_id),
     task_name VARCHAR(20) NOT NULL,
     task_description TEXT,
     tasks_status task_status NOT NULL,
@@ -36,4 +37,9 @@ CREATE TABLE IF NOT EXISTS tasks (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     team_id INTEGER REFERENCES teams(team_id)
+);
+
+CREATE TABLE IF NOT EXISTS activity (
+    activity_id SERIAL PRIMARY KEY,
+    activity_name VARCHAR(250) NOT NULL,
 );
