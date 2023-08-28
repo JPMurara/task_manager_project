@@ -19,14 +19,13 @@ CREATE TABLE IF NOT EXISTS members (
     team_id INTEGER REFERENCES teams(team_id)
 );
 
+CREATE TABLE IF NOT EXISTS activity (
+    activity_id SERIAL PRIMARY KEY,
+    activity_name VARCHAR(250) NOT NULL,
+)
 
 CREATE TYPE task_status AS ENUM ('pending', 'in_progress', 'completed');
 CREATE TYPE priority AS ENUM ('low', 'medium', 'high');
-
-CREATE TABLE IF NOT EXISTS activity {
-    activity_id SERIAL PRIMARY KEY,
-    activity_name VARCHAR(250) NOT NULL,
-}
 
 CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
