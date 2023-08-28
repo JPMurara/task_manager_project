@@ -63,7 +63,7 @@ function renderTasks() {
     if (tasks) {
       const todoTasksContainer = document.getElementById("todoTasksContainer");
       tasks.forEach((el) => {
-        todoContainer.innerHTML = `
+        todoTasksContainer.innerHTML = `
             <div class="taskEl">
             <p class="taskName">PLACEHOLDER FOR TASK NAME</p>
             <i class="fa-solid fa-pen-to-square iconEdit"></i>
