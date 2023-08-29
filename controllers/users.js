@@ -13,25 +13,24 @@ const router = express.Router();
 // handler for register new user
 router.post("/signup", (req, res) => {
   //Deconstruct the form
-  const { name, email, password, confirmPassword } = req.body;
-  if (!name || !email || !password || !confirmPassword) {
+  const { name, signupEmail, signupPassword, confirmPassword } = req.body;
+  if (!name || !signupEmail || !signupPassword || !confirmPassword) {
     return res.status(400).json({
       success: false,
       message: "Name, email, password, or confirm password is missing",
     });
   }
   // check if passwords match
-  if (password === confirmPassword) {
-    const checkedPassword = isStrongPassword(password);
+  if (signupPassword === confirmPassword) {
+    const checkedPassword = isStrongPassword(signupPassword);
     // check if password is strong
     if (checkedPassword) {
       //Hash password with bcrypt
-      const hashPassword = generateHash(password);
-      const newUser = { name, email, password: hashPassword };
-
+      const hashPassword = generateHash(signupPassword);
+      const newUser = { name, signupEmail, hashPassword: hashPassword };
       // checks if user already exists
       const sql = `SELECT * FROM users where email=$1`;
-      db.query(sql, [newUser.email]).then((dbRes) => {
+      db.query(sql, [newUser.signupEmail]).then((dbRes) => {
         if (dbRes.rows.length > 0) {
           res.status(400).json({
             success: false,
@@ -44,7 +43,11 @@ router.post("/signup", (req, res) => {
                 VALUES ($1, $2, $3);
             `;
           //Query the database with the sql and values
-          db.query(sql, [newUser.name, newUser.email, newUser.hashPassword])
+          db.query(sql, [
+            newUser.name,
+            newUser.signupEmail,
+            newUser.hashPassword,
+          ])
             .then(() => {
               res.status(200).json({
                 success: true,
