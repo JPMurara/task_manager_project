@@ -27,3 +27,8 @@ body {
   margin-right: auto;
   margin-left: 2rem;
 }
+
+#formsContainer {
+  display: flex;
+  justify-content: space-around;
+}
