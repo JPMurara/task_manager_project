@@ -100,32 +100,29 @@ function signupEventListener(form) {
 function loginEventListener(form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-
-    const formData = new FormData(form);
-
-    const data = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
-
+    // const formData = new FormData(form);
+    const data = Object.fromEntries(new FormData(form));
+    // const data = {
+    //   email: formData.get("email"),
+    //   password: formData.get("password"),
+    // };
     axios
       .post("/api/sessions", data)
       .then((response) => {
         //RENDER DASHBOARD
-        renderHeader();
+        renderDashboard();
       })
       .catch((error) => {
         // Handle errors from the server response
-        const message = document.getElementById("message");
-        const errorMessage = error.response.data.message;
+        const message = document.getElementById("loginFormMessage");
         if (error.response) {
           if (error.response.status === 400) {
-            message.innerText = errorMessage;
+            message.innerText = error.response.data.message;
           } else {
-            message.innerText = errorMessage;
+            message.innerText = error.response.data.message;
           }
         } else {
-          message.innerText = errorMessage;
+          message.innerText = error.response.data.message;
         }
       });
   });
