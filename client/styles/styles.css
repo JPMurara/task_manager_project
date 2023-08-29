@@ -1,0 +1,34 @@
+body {
+  background-color: #ccc;
+  font-family: Montserrat, sans-serif;
+}
+
+.nav-list {
+  background: #333;
+  color: #ccc;
+  display: flex;
+  margin: 0;
+  padding: 1rem 0;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.nav-list li {
+  list-style: none;
+  margin-right: 2rem;
+}
+
+.nav-list li:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
+.nav-list li:first-child {
+  margin-right: auto;
+  margin-left: 2rem;
+}
+
+#formsContainer {
+  display: flex;
+  justify-content: space-around;
+}

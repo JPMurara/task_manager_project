@@ -10,58 +10,87 @@ const bcrypt = require("bcrypt");
 //Create router for easy access
 const router = express.Router();
 
+// handler for register new user
 router.post("/signup", (req, res) => {
-    //Deconstruct the form
-    const { name, email, password, confirmPassword } = req.body;
-
-    //Hash password with bcrypt
-    const hash_password = generateHash(password);
-
-    //SQL query to insert user into the database
-    const sql = `
-         INSERT INTO users (name, email, hash_password)
-         VALUES ($1, $2, $3)
-         RETURNING user_id, name, email;
-     `;
-
-    //ERROR HANDLING
-    if (!name || !email || !password || !confirmPassword) {
-        return res.status(400).json({
-            message: "Name, email, password, or confirmPassword is missing",
-        });
+  //Deconstruct the form
+  const { name, signupEmail, signupPassword, confirmPassword } = req.body;
+  if (!name || !signupEmail || !signupPassword || !confirmPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Name, email, password, or confirm password is missing",
+    });
+  }
+  // check if passwords match
+  if (signupPassword === confirmPassword) {
+    const checkedPassword = isStrongPassword(signupPassword);
+    // check if password is strong
+    if (checkedPassword) {
+      //Hash password with bcrypt
+      const hashPassword = generateHash(signupPassword);
+      const newUser = { name, signupEmail, hashPassword: hashPassword };
+      // checks if user already exists
+      const sql = `SELECT * FROM users where email=$1`;
+      db.query(sql, [newUser.signupEmail]).then((dbRes) => {
+        if (dbRes.rows.length > 0) {
+          res.status(400).json({
+            success: false,
+            message: "User alredy registered. Please go to Login area.",
+          });
+        } else {
+          //SQL query to insert user into the database
+          const sql = `
+                INSERT INTO users (name, email, hash_password)
+                VALUES ($1, $2, $3);
+            `;
+          //Query the database with the sql and values
+          db.query(sql, [
+            newUser.name,
+            newUser.signupEmail,
+            newUser.hashPassword,
+          ])
+            .then(() => {
+              res.status(200).json({
+                success: true,
+                message: "User created successfully",
+              });
+            })
+            .catch((error) => {
+              res.status(400).json({
+                success: false,
+                message: "Bad request",
+              });
+            });
+        }
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Password not strong enough. Try again",
+      });
     }
-
-    if (password !== confirmPassword) {
-        return res.status(400).json({ message: "Passwords do not match" });
-    }
-
-    //Include isStrongPassword function here
-    if (password.length < 4) {
-        return res.status(400).json({
-            message: "Password must be at least 4 characters long",
-        });
-    }
-
-    //Query the database with the sql and values
-    db.query(sql, [name, email, hash_password])
-        .then(() => {
-            res.status(200).json({ message: "User created successfully" });
-        })
-        .catch((error) => {
-            console.log(error.constraint);
-            if (error.constraint === "users_email_key") {
-                return res
-                    .status(409)
-                    .json({ message: "email already exists" });
-            }
-            console.error("database error encountered: ", error);
-            res.status(500).json({ message: "internal server error" });
-        });
+  } else {
+    res.status(400).json({
+      success: false,
+      message: "Password do not match. Try again.",
+    });
+  }
 });
 
 //Function to generate a hashed password
 function generateHash(password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+}
+// Function to check if the password is strong:
+// contains at least one lowercase char: ^(?=.*[a-z])
+// contains at least one uppercase char: ^(?=.*[A-Z])
+// contains at least one digit: (?=.*\d)
+// contains at least one special char from the set(@$!%*?&): (?=.*[@$!%*?&])
+// this sequence of char ([A-Za-z\d@$!%*?&]{4,}) must be matched to fulfill above requirements and contains at least 4 char
+// uses the test method to check if the password matches the pattern, returns T/F
+function isStrongPassword(password) {
+  const regex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{4,}$/;
+  return regex.test(password);
 }
 
 //Export signup route
