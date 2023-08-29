@@ -19,17 +19,16 @@ CREATE TABLE IF NOT EXISTS members (
     team_id INTEGER REFERENCES teams(team_id)
 );
 
-CREATE TABLE IF NOT EXISTS activity (
+CREATE TABLE IF NOT EXISTS activities (
     activity_id SERIAL PRIMARY KEY,
-    activity_name VARCHAR(250) NOT NULL,
-)
+    activity_name VARCHAR(250) NOT NULL);
 
 CREATE TYPE task_status AS ENUM ('pending', 'in_progress', 'completed');
 CREATE TYPE priority AS ENUM ('low', 'medium', 'high');
 
 CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
-    activity_id INTEGER REFERENCES activity(activity_id),
+    activity_id INTEGER REFERENCES activities(activity_id),
     task_name VARCHAR(20) NOT NULL,
     task_description TEXT,
     tasks_status task_status,
@@ -40,10 +39,5 @@ CREATE TABLE IF NOT EXISTS tasks (
     created_by INTEGER REFERENCES users(user_id),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    team_id INTEGER REFERENCES teams(team_id)
-);
+    team_id INTEGER REFERENCES teams(team_id));
 
-CREATE TABLE IF NOT EXISTS activity (
-    activity_id SERIAL PRIMARY KEY,
-    activity_name VARCHAR(250) NOT NULL,
-);

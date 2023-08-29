@@ -10,7 +10,7 @@ const OpenAI = require("openai");
 
 const openai = new OpenAI({
     organization: "org-2RFOiFUTNJtIGdP2ywIyqOrE",
-    apiKey: "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",
+    apiKey: "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",
 });
 
 //Create router for easy access
@@ -22,7 +22,7 @@ router.post("/activity", (req, res) => {
     console.log("activity ", activity);
 
     const sql = `
-    INSERT INTO activity (activity_name)
+    INSERT INTO activities (activity_name)
     VALUES ($1)
     RETURNING activity_name;
     `;
@@ -37,59 +37,73 @@ router.post("/activity", (req, res) => {
         });
 });
 
-// router.post("/", async (req, res) => {
-//     //Deconstruct the form
-//     const { messages } = req.body;
+router.post("/", async (req, res) => {
+    const sql = "SELECT * from activities ORDER BY activity_id DESC LIMIT 1";
 
-//     console.log(messages);
+    try {
+        const activityResult = await db.query(sql);
+        const activity = activityResult.rows[0];
 
-//     const completion = await openai.chat.completions.create({
-//         model: "gpt-3.5-turbo",
-//         messages: [
-//             {
-//                 role: "system",
-//                 content:
-//                     "anything that you will be prompted will be used to generate a to-do list. answer with up to 5 tasks using keywords or short sentences of up to 3 words only. Output your answer in JSON",
-//             },
-//             ...messages,
-//         ],
-//     });
+        if (!activity) {
+            return res.status(404).json({ error: "Activity not found" });
+        }
 
-//     console.log("completion", completion);
+        // Now make a call to OpenAI with the activity as a message
+        const messages = [
+            {
+                role: "system",
+                content:
+                    "anything that you will be prompted will be used to generate a to-do list. answer with up to 5 tasks using keywords or short sentences of up to 3 words only. Output your answer in JSON",
+            },
+            {
+                role: "user",
+                content: activity.activity_name,
+            },
+        ];
 
-//     const tasksAI = JSON.parse(completion.choices[0].message.content);
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: messages,
+        });
 
-//     console.log("tasksAI: ", tasksAI);
+        console.log("completion", completion);
 
-//     const data = tasksAI.tasks;
+        const tasksAI = JSON.parse(completion.choices[0].message.content);
 
-//     console.log("data: ", data);
-//     // Loop through each task and log it (or process it as you see fit)
-//     const name = data.forEach((task) => {
-//         console.log("task: ", task);
-//         return task;
-//     });
+        console.log("tasksAI: ", tasksAI);
 
-//     console.log("name ", name);
+        const data = tasksAI.tasks;
 
-//     // res.json({ completion: JSON.parse(completion.choices[0].message.content) });
+        console.log("data: ", data);
 
-//     //SQL query to insert user into the database
-//     const sql = `
-//         INSERT INTO tasks (task_name)
-//         VALUES ($1)
-//         RETURNING task_name;
-//     `;
+        // (Optional) Save tasks to your database if needed
 
-//     db.query(sql, [name])
-//         .then(() => {
-//             res.status(200).json({ message: "Task created successfully" });
-//         })
-//         .catch((error) => {
-//             console.error("database error encountered: ", error);
-//             res.status(500).json({ message: "internal server error" });
-//         });
-// });
+        res.json({ tasks: data });
+    } catch (error) {
+        console.error(
+            "Error fetching activity or communicating with OpenAI: ",
+            error
+        );
+        res.status(500).json({ message: "internal server error" });
+    }
+
+    //NEED TO SAVE TASKS TO DATABASE
+    // //SQL query to insert user into the database
+    // const sql = `
+    //     INSERT INTO tasks (task_name)
+    //     VALUES ($1)
+    //     RETURNING task_name;
+    // `;
+
+    // db.query(sql, [name])
+    //     .then(() => {
+    //         res.status(200).json({ message: "Task created successfully" });
+    //     })
+    //     .catch((error) => {
+    //         console.error("database error encountered: ", error);
+    //         res.status(500).json({ message: "internal server error" });
+    //     });
+});
 
 //Export signup route
 module.exports = router;
