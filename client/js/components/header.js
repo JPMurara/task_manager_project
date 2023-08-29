@@ -50,8 +50,6 @@ function renderHeader() {
     //Get activity name and save it on database
     getActivity();
 
-    getTasks();
-
     //Check login status and update UI
     loginStatus();
 }
@@ -67,25 +65,28 @@ function getActivity() {
             activity: formData.get("message"),
         };
 
-        axios
-            .post("http://localhost:3000/api/openai/activity", data)
-            .then((res) => {
-                renderHeader();
-            });
+        axios.post("/api/openai/activity", data).then((res) => {
+            console.log(res.data.tasks);
+            //CALL RENDER TASKS FUNCTION HERE
+            renderHeader();
+        });
     });
 }
 
+//CREATE RENDER TASKS TO LOOP
 function getTasks() {
     axios
-        .post("http://localhost:3000/api/openai")
+        .get("/api/openai/activity/tasks")
         .then((res) => {
-            const tasks = res.data.tasks;
+            console.log(res);
+            const tasks = res.data;
 
+            console.log(tasks);
             tasks.forEach((task) => {
                 const taskElement = document.createElement("div");
                 taskElement.classList.add("message");
                 taskElement.classList.add("message_received");
-                taskElement.innerHTML = `<div class="message_text">${task}</div>`;
+                taskElement.innerHTML = `<div class="message_text">${task.task_name}</div>`;
 
                 document.body.appendChild(taskElement);
             });

@@ -18,7 +18,7 @@ app.use(cors());
 //Connect to controllers
 const usersRoute = require("./controllers/users.js");
 const sessionsRoute = require("./controllers/sessions.js");
-const aiRoute = require("./controllers/openAI.js");
+const aiRoute = require("./controllers/activities.js");
 
 app.use(
     expressSession({
