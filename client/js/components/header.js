@@ -77,7 +77,7 @@ function getActivity() {
 
 function getTasks() {
     axios
-        .post("http://localhost:3000/api/openai")
+        .get("http://localhost:3000/api/openai")
         .then((res) => {
             const tasks = res.data.tasks;
 

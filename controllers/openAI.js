@@ -4,13 +4,15 @@ const express = require("express");
 //Connect with database
 const db = require("../database/db.js");
 
+require("dotenv").config();
+
 //Connect to OpenAI
 
 const OpenAI = require("openai");
 
 const openai = new OpenAI({
-    organization: "org-2RFOiFUTNJtIGdP2ywIyqOrE",
-    apiKey: "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",
+    organization: process.env.ORGANIZATION,
+    apiKey: process.env.APIKEY,
 });
 
 //Create router for easy access
@@ -37,12 +39,14 @@ router.post("/activity", (req, res) => {
         });
 });
 
-router.post("/", async (req, res) => {
+router.get("/", async (req, res) => {
     const sql = "SELECT * from activities ORDER BY activity_id DESC LIMIT 1";
 
     try {
         const activityResult = await db.query(sql);
         const activity = activityResult.rows[0];
+
+        console.log(activity);
 
         if (!activity) {
             return res.status(404).json({ error: "Activity not found" });
@@ -76,33 +80,28 @@ router.post("/", async (req, res) => {
 
         console.log("data: ", data);
 
-        // (Optional) Save tasks to your database if needed
+        //SQL query to insert user into the database
+        const tasksSql = `
+            INSERT INTO tasks (task_name)
+            VALUES ($1)
+            RETURNING task_name;
+        `;
 
+        await Promise.all(
+            data.map((task) => {
+                return db.query(tasksSql, [task]);
+            })
+        );
+
+        //PASS TO THE FRONTEND
         res.json({ tasks: data });
     } catch (error) {
         console.error(
-            "Error fetching activity or communicating with OpenAI: ",
+            "Error fetching tasks or communicating with OpenAI: ",
             error
         );
         res.status(500).json({ message: "internal server error" });
     }
-
-    //NEED TO SAVE TASKS TO DATABASE
-    // //SQL query to insert user into the database
-    // const sql = `
-    //     INSERT INTO tasks (task_name)
-    //     VALUES ($1)
-    //     RETURNING task_name;
-    // `;
-
-    // db.query(sql, [name])
-    //     .then(() => {
-    //         res.status(200).json({ message: "Task created successfully" });
-    //     })
-    //     .catch((error) => {
-    //         console.error("database error encountered: ", error);
-    //         res.status(500).json({ message: "internal server error" });
-    //     });
 });
 
 //Export signup route
