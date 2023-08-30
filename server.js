@@ -19,6 +19,8 @@ app.use(cors());
 const usersRoute = require("./controllers/users.js");
 const sessionsRoute = require("./controllers/sessions.js");
 const aiRoute = require("./controllers/activities.js");
+const teamsRoute = require("./controllers/teams.js");
+const membersRoute = require("./controllers/members.js");
 
 app.use(
     expressSession({
@@ -48,6 +50,8 @@ app.use(express.json());
 app.use("/api/users", usersRoute);
 app.use("/api/sessions", sessionsRoute);
 app.use("/api/openai", aiRoute);
+app.use("/api/teams", teamsRoute);
+app.use("/api/team/members", membersRoute);
 
 //Error middleware
 app.use((err, req, res, next) => {

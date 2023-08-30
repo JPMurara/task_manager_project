@@ -41,3 +41,17 @@ CREATE TABLE IF NOT EXISTS tasks (
     completed_at TIMESTAMP,
     team_id INTEGER REFERENCES teams(team_id));
 
+ALTER TABLE teams
+ADD CONSTRAINT unique_team_name UNIQUE (team_name);
+
+ALTER TABLE members
+ADD CONSTRAINT unique_user_team_combination UNIQUE (user_id, team_id);
+
+ALTER TABLE tasks
+DROP COLUMN team_id;
+
+ALTER TABLE activities
+ADD COLUMN team_id INTEGER REFERENCES teams(team_id);
+
+ALTER TABLE tasks
+ADD CONSTRAINT unique_task_name_per_activity UNIQUE (activity_id, task_name);
