@@ -86,13 +86,19 @@ function signupEventListener(form) {
           .catch((error) => {
             // Handle errors from the server response
             message.innerText = error.response.data.message;
+            password.value = "";
+            confirmPassword.value = "";
           });
       } else {
         message.innerText =
           "Password not strong enough. Try again.\nPassword has to contain at least:\nONE uppercase and ONE lowercase\nONE numer\nONE special character (@,$,!,%,*,?,&)\nFOUR characters in lenght";
+        password.value = "";
+        confirmPassword.value = "";
       }
     } else {
       message.innerText = "Password do not match. Try again.";
+      password.value = "";
+      confirmPassword.value = "";
     }
   });
 }
@@ -101,6 +107,8 @@ function signupEventListener(form) {
 function loginEventListener(form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    const loginEmail = form.querySelector("#loginEmail");
+    const loginPassword = form.querySelector("#loginPassword");
     // const formData = new FormData(form);
     const data = Object.fromEntries(new FormData(form));
     // const data = {
@@ -116,15 +124,9 @@ function loginEventListener(form) {
       .catch((error) => {
         // Handle errors from the server response
         const message = document.getElementById("loginFormMessage");
-        // if (error.response) {
-        //   if (error.response.status === 400) {
         message.innerText = error.response.data.message;
-        //   } else {
-        //     message.innerText = error.response.data.message;
-        //   }
-        // } else {
-        //   message.innerText = error.response.data.message;
-        // }
+        loginEmail.value = "";
+        loginPassword.value = "";
       });
   });
 }
