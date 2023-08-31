@@ -10,7 +10,6 @@ const router = express.Router();
 router.post("/", (req, res) => {
   //Deconstruct the form
   const { loginEmail, loginPassword } = req.body;
-  console.log("login email", loginEmail);
   //ERROR HANDLING
   if (!loginEmail || !loginPassword) {
     return res.status(400).json({ message: "Email or password is missing" });
@@ -20,7 +19,6 @@ router.post("/", (req, res) => {
   db.query(sql, [loginEmail])
     .then((dbRes) => {
       if (!dbRes.rows[0]) {
-        console.log("BE user not registered yet");
         return res.status(401).json({
           success: false,
           message: "User not registered yet.",
@@ -28,11 +26,8 @@ router.post("/", (req, res) => {
       }
       //   checks if the password matches with DB password
       const hashedPassword = dbRes.rows[0].hash_password;
-      //   console.log("Raw Password:", loginPassword);
-      //   console.log("Hashed Password from DB:", hashedPassword);
       const validPassword = isValidPassword(loginPassword, hashedPassword);
       if (validPassword) {
-        console.log("BE password is valid - login successful");
         // creates the sessionUser object
         req.session.sessionUser = {
           userId: dbRes.rows[0].user_id,
@@ -47,7 +42,6 @@ router.post("/", (req, res) => {
           sessionUser: req.session.sessionUser,
         });
       } else {
-        console.log("BE email or password wrong");
         // if passwords dont match
         res.status(401).json({
           success: false,
@@ -56,7 +50,6 @@ router.post("/", (req, res) => {
       }
     })
     .catch((error) => {
-      console.error("database error encountered:", error);
       res.status(500).json({
         success: false,
         message: "Internal server error",
@@ -67,13 +60,8 @@ router.post("/", (req, res) => {
 //GET SESSION NAME FOR FRONT-END ex. "Logged in as Bruno"
 router.get("/status", (req, res) => {
   if (!req.session.isAuthenticated) {
-    // console.log("Not logged in");
-
     return res.status(400).json({ message: "Not logged in" });
   }
-
-  console.log("User is logged in");
-
   res.json({
     email: req.session.email,
     name: req.session.name,
@@ -83,7 +71,6 @@ router.get("/status", (req, res) => {
 router.post("/logout", (req, res) => {
   req.session.destroy((error) => {
     if (error) {
-      console.error("Error destroying session:", error);
       res.status(500).json({ message: "Internal server error" });
     } else {
       res.status(200).json({ message: "Logged out successfully" });

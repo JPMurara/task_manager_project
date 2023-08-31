@@ -60,8 +60,8 @@ function renderAuthForms() {
   loginEventListener(loginForm);
 }
 
+// SignUp form Submission
 function signupEventListener(form) {
-  //Form Submission
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const password = form.querySelector("#signupPassword");
@@ -97,6 +97,7 @@ function signupEventListener(form) {
   });
 }
 
+// Login form Submission
 function loginEventListener(form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -115,15 +116,15 @@ function loginEventListener(form) {
       .catch((error) => {
         // Handle errors from the server response
         const message = document.getElementById("loginFormMessage");
-        if (error.response) {
-          if (error.response.status === 400) {
-            message.innerText = error.response.data.message;
-          } else {
-            message.innerText = error.response.data.message;
-          }
-        } else {
-          message.innerText = error.response.data.message;
-        }
+        // if (error.response) {
+        //   if (error.response.status === 400) {
+        message.innerText = error.response.data.message;
+        //   } else {
+        //     message.innerText = error.response.data.message;
+        //   }
+        // } else {
+        //   message.innerText = error.response.data.message;
+        // }
       });
   });
 }
