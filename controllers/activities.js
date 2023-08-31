@@ -139,7 +139,7 @@ router.post("/", async (req, res) => {
             {
                 role: "system",
                 content:
-                    "anything that you will be prompted will be used to generate a to-do list. answer with up to 5 tasks using keywords or short sentences of up to 3 words only. Output your answer in JSON",
+                    "Help generate a to-do list. Please provide up to 5 tasks. Each task should be 1-4 words and start with a capital letter. Your response will be outputted in JSON format.",
             },
             {
                 role: "user",

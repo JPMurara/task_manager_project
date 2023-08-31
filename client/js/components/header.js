@@ -15,75 +15,29 @@ function renderHeader() {
     const teams = document.createElement("li");
     const login = document.createElement("li");
 
-    //TEST OPENAI
-    const openai = document.createElement("li");
-    openai.innerHTML = `
-        <form action="" id="formAI">
-        <input type="text" name="message" id="message" />
-        <button type="submit">Send</button>
-        </form>
-    `;
-
     // Create a logo header
     const logoHeader = document.createElement("h1");
     logoHeader.textContent = "Colab Task Manager";
     logo.appendChild(logoHeader);
 
     // Set text content for menu items
-    activities.textContent = "My Activities";
+    activities.textContent = "Dashboard";
     teams.textContent = "My Teams";
     login.textContent = "Login";
 
     // Append list items to the navigation list
-    navUl.append(logo, activities, teams, login, openai);
+    navUl.append(logo, activities, teams, login);
 
     // Append navigation list to the header
     header.replaceChildren(navUl);
 
     // Add event listeners to menu items
-    // activities.addEventListener("click", renderActivities);
     // teams.addEventListener("click", renderTeams);
     login.addEventListener("click", renderAuthForms);
-
     activities.addEventListener("click", renderDashboard);
-
-    //Get activity name and save it on database
-    getActivity();
 
     //Check login status and update UI
     loginStatus();
-}
-
-function getActivity() {
-    const form = document.querySelector("form");
-
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(form);
-        const data = {
-            activity: formData.get("message"),
-        };
-
-        renderTasks(data);
-    });
-}
-
-function renderTasks(data) {
-    axios.post("/api/activity", data).then((res) => {
-        console.log(res.data.tasks);
-
-        const tasks = res.data.tasks;
-
-        tasks.forEach((task) => {
-            const taskElement = document.createElement("div");
-            taskElement.classList.add("message");
-            taskElement.classList.add("message_received");
-            taskElement.innerHTML = `<div class="message_text">${task}</div>`;
-
-            document.body.appendChild(taskElement);
-        });
-    });
 }
 
 //Check login status and update UI
