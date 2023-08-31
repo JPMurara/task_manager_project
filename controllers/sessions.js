@@ -21,7 +21,7 @@ router.post("/", (req, res) => {
       if (!dbRes.rows[0]) {
         return res.status(401).json({
           success: false,
-          message: "User not registered yet.",
+          message: "User not registered yet",
         });
       }
       //   checks if the password matches with DB password
@@ -38,7 +38,6 @@ router.post("/", (req, res) => {
         // sends the sessionUser to the front-end
         res.status(200).json({
           success: true,
-          message: "Login successful",
           sessionUser: req.session.sessionUser,
         });
       } else {
