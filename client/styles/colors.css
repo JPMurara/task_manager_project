@@ -1,9 +1,11 @@
 :root {
   --beige: #fbf8cc;
-  --pink: #ffcfd2;
+  --pink: #732314;
+  --pink600: #661f12;
   --blue: #8eecf5;
   --green: #b9fbc0;
-  --mainBackground: #caf0f8;
-  --darkLettersColor: #184e77;
+  --green600: #86dd8f;
+  --mainBackground: #030302;
+  --darkLettersColor: #bfdcf1;
   --warning: #e63946;
 }
