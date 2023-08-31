@@ -65,35 +65,25 @@ function getActivity() {
             activity: formData.get("message"),
         };
 
-        axios.post("/api/openai/activity", data).then((res) => {
-            console.log(res.data.tasks);
-            //CALL RENDER TASKS FUNCTION HERE
-            renderHeader();
-        });
+        renderTasks(data);
     });
 }
 
-//CREATE RENDER TASKS TO LOOP
-function getTasks() {
-    axios
-        .get("/api/openai/activity/tasks")
-        .then((res) => {
-            console.log(res);
-            const tasks = res.data;
+function renderTasks(data) {
+    axios.post("/api/activity", data).then((res) => {
+        console.log(res.data.tasks);
 
-            console.log(tasks);
-            tasks.forEach((task) => {
-                const taskElement = document.createElement("div");
-                taskElement.classList.add("message");
-                taskElement.classList.add("message_received");
-                taskElement.innerHTML = `<div class="message_text">${task.task_name}</div>`;
+        const tasks = res.data.tasks;
 
-                document.body.appendChild(taskElement);
-            });
-        })
-        .catch((err) => {
-            console.error("Error fetching tasks: ", err);
+        tasks.forEach((task) => {
+            const taskElement = document.createElement("div");
+            taskElement.classList.add("message");
+            taskElement.classList.add("message_received");
+            taskElement.innerHTML = `<div class="message_text">${task}</div>`;
+
+            document.body.appendChild(taskElement);
         });
+    });
 }
 
 //Check login status and update UI

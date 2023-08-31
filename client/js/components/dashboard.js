@@ -52,7 +52,7 @@ function renderDashboard() {
 }
 
 function renderTasks() {
-  axios.get("http://localhost:3000/api/openai").then((res) => {
+  axios.get("/api/activities").then((res) => {
     //   change the .tasks according with what was built in the BE
     const tasks = res.data.tasks;
     if (tasks) {

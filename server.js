@@ -11,14 +11,14 @@ const pgSession = require("connect-pg-simple")(expressSession);
 //Connect to database file
 const db = require("./database/db.js");
 
-//CROS
+//CROSS
 const cors = require("cors");
 app.use(cors());
 
 //Connect to controllers
 const usersRoute = require("./controllers/users.js");
 const sessionsRoute = require("./controllers/sessions.js");
-const aiRoute = require("./controllers/activities.js");
+const activitiesRoute = require("./controllers/activities.js");
 const teamsRoute = require("./controllers/teams.js");
 const membersRoute = require("./controllers/members.js");
 
@@ -49,7 +49,7 @@ app.use(express.json());
 //Connect to the API routes
 app.use("/api/users", usersRoute);
 app.use("/api/sessions", sessionsRoute);
-app.use("/api/openai", aiRoute);
+app.use("/api/activity", activitiesRoute);
 app.use("/api/teams", teamsRoute);
 app.use("/api/team/members", membersRoute);
 
