@@ -4,69 +4,67 @@ import renderHeader from "./header.js";
 function renderAuthForms() {
   const page = document.getElementById("page");
 
-  const heading = document.createElement("h1");
-  heading.textContent = "Welcome!";
-
   //Div to store login and signup forms
   const formsContainer = document.createElement("div");
   formsContainer.id = "formsContainer";
 
   //SIGN UP FORM
   const signupForm = document.createElement("form");
-  signupForm.id = "signupForm";
+  signupForm.className = "form";
   signupForm.innerHTML = `
-            <h2>Sign Up</h2>
-            <span id="signupFormMessage"></span><br>
+            <h2>Sign up</h2>
+  
+            <dialog class="dialog">
+              <p class="errorMessage"></p>
+            </dialog>
 
-            <label for="name">Name:</label>
-            <input type="text" name="name" id="name" required><br>
+            <input type="text" name="name" id="name" placeholder="name" required><br>
            
-            <label for="email">Email</label>
-            <input type="email" name="signupEmail" id="signupEmail" required></input><br>
+            <input type="email" name="signupEmail" id="signupEmail" placeholder="email" required></input><br>
             
-            <label for="password">Password: </label>
-            <input type="password" name="signupPassword" id="signupPassword" required><br>
+            <input type="password" name="signupPassword" id="signupPassword" placeholder="password" required><br>
             
-            <label for="confirmPassword">Confirm Password: </label>
-            <input type="password" name="confirmPassword" id="confirmPassword" required><br>
+            <input type="password" name="confirmPassword" id="confirmPassword" placeholder="confirm our password" required><br>
             
-            <button type="submit">Signup</button>
+            <button type="submit" class="submitBtn">Register</button>
         `;
 
   //LOGIN FORM
   const loginForm = document.createElement("form");
-  loginForm.id = "loginForm";
+  loginForm.className = "form";
   loginForm.innerHTML = `
         <h2>Login</h2>
-        <span id="loginFormMessage"></span><br>
-
-        <label for="email">Email</label>
-        <input type="email" name="loginEmail" id="loginEmail" required></input><br>
         
+        <dialog class="dialog">
+          <p class="errorMessage"></p>
+        </dialog>
 
-        <label for="password">Password: </label>
-        <input type="password" name="loginPassword" id="loginPassword" required><br>
+        <input type="email" name="loginEmail" id="loginEmail" placeholder="email" required></input><br>
         
-        <button type="submit">Login</button>
+        <input type="password" name="loginPassword" id="loginPassword" placeholder="password" required><br>
+        
+        <button type="submit" class="submitBtn">Login</button>
     `;
 
   //Replace the content of the page
   formsContainer.appendChild(signupForm);
   formsContainer.appendChild(loginForm);
-  page.replaceChildren(heading, formsContainer);
+  page.replaceChildren(formsContainer);
 
   // Attach event listeners
   signupEventListener(signupForm);
   loginEventListener(loginForm);
 }
 
+// SignUp form Submission
 function signupEventListener(form) {
-  //Form Submission
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const password = form.querySelector("#signupPassword");
     const confirmPassword = form.querySelector("#confirmPassword");
     const message = document.getElementById("signupFormMessage");
+    const errorDialog = form.querySelector(".dialog");
+    const errorMessage = form.querySelector(".errorMessage");
     //Clear previous error messages
     message.innerText = "";
     //Data Collection
@@ -85,21 +83,51 @@ function signupEventListener(form) {
           })
           .catch((error) => {
             // Handle errors from the server response
-            message.innerText = error.response.data.message;
+            // message.innerText = error.response.data.message;
+            errorDialog.showModal();
+            errorMessage.innerText = error.response.data.message;
+            setTimeout(() => {
+              errorDialog.close();
+            }, "3000");
+            password.value = "";
+            confirmPassword.value = "";
           });
       } else {
-        message.innerText =
-          "Password not strong enough. Try again.\nPassword has to contain at least:\nONE uppercase and ONE lowercase\nONE numer\nONE special character (@,$,!,%,*,?,&)\nFOUR characters in lenght";
+        // message.innerText =
+        // "Password not strong enough. Try again.\nPassword has to contain at least:\nONE uppercase and ONE lowercase\nONE numer\nONE special character (@,$,!,%,*,?,&)\nFOUR characters in lenght";
+        const message =
+          "Password has to contain at least:\n1 uppercase and 1 lowercase\n1 numer\n1 special character (@,$,!,%,*,?,&)\n4 characters in lenght";
+        errorDialog.showModal();
+        errorMessage.innerText = message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "8000");
+        password.value = "";
+        confirmPassword.value = "";
       }
     } else {
-      message.innerText = "Password do not match. Try again.";
+      // message.innerText = "Password do not match. Try again.";
+      const message = "Password do not match. Try again";
+      errorDialog.showModal();
+      errorMessage.innerText = message;
+      setTimeout(() => {
+        errorDialog.close();
+      }, "3000");
+      password.value = "";
+      confirmPassword.value = "";
     }
   });
 }
 
+// Login form Submission
 function loginEventListener(form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    const loginEmail = form.querySelector("#loginEmail");
+    const loginPassword = form.querySelector("#loginPassword");
+    const errorDialog = form.querySelector(".dialog");
+    const errorMessage = form.querySelector(".errorMessage");
+
     // const formData = new FormData(form);
     const data = Object.fromEntries(new FormData(form));
     // const data = {
@@ -109,21 +137,19 @@ function loginEventListener(form) {
     axios
       .post("/api/sessions", data)
       .then((response) => {
-        //RENDER DASHBOARD
         renderDashboard();
       })
       .catch((error) => {
         // Handle errors from the server response
-        const message = document.getElementById("loginFormMessage");
-        if (error.response) {
-          if (error.response.status === 400) {
-            message.innerText = error.response.data.message;
-          } else {
-            message.innerText = error.response.data.message;
-          }
-        } else {
-          message.innerText = error.response.data.message;
-        }
+        errorDialog.showModal();
+        errorMessage.innerText = error.response.data.message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "3000");
+        // const message = document.getElementById("loginFormMessage");
+        // message.innerText = error.response.data.message;
+        loginEmail.value = "";
+        loginPassword.value = "";
       });
   });
 }

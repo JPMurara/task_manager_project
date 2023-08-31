@@ -1,0 +1,25 @@
+#header-nav {
+  background-color: var(--pink);
+}
+
+.nav-list {
+  display: flex;
+  margin: 0;
+  padding: 1rem 0;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.nav-list li {
+  list-style: none;
+  margin-right: 2rem;
+}
+
+.nav-list li:hover {
+  cursor: pointer;
+}
+
+.nav-list li:first-child {
+  margin-right: auto;
+  margin-left: 2rem;
+}

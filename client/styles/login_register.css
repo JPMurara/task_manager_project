@@ -1,0 +1,40 @@
+#page {
+  display: flex;
+  flex-direction: column;
+  padding-top: 100px;
+}
+#page h1 {
+  margin: auto;
+}
+
+#formsContainer {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0 2rem;
+  border-radius: 0.3rem;
+}
+
+.form {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.3rem;
+  padding: 2rem;
+  margin: 0.3rem 0;
+  background-color: var(--pink);
+}
+
+.form h2 {
+  align-self: center;
+}
+
+.submitBtn {
+  align-self: center;
+  width: 100%;
+}
+
+#loginFormMessage,
+#signupFormMessage {
+  color: var(--warning);
+  font-weight: bold;
+}

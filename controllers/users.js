@@ -34,7 +34,7 @@ router.post("/signup", (req, res) => {
         if (dbRes.rows.length > 0) {
           res.status(400).json({
             success: false,
-            message: "User alredy registered. Please go to Login area.",
+            message: "User alredy registered. Please go to Login area",
           });
         } else {
           //SQL query to insert user into the database
@@ -51,7 +51,7 @@ router.post("/signup", (req, res) => {
             .then(() => {
               res.status(200).json({
                 success: true,
-                message: "User created successfully",
+                message: "You are registered! Please login now",
               });
             })
             .catch((error) => {
@@ -71,7 +71,7 @@ router.post("/signup", (req, res) => {
   } else {
     res.status(400).json({
       success: false,
-      message: "Password do not match. Try again.",
+      message: "Password do not match. Try again",
     });
   }
 });
