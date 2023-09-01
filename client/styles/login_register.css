@@ -1,7 +1,7 @@
 #page {
   display: flex;
   flex-direction: column;
-  /* padding-top: 50px; */
+  padding-top: 50px;
 }
 #page h1 {
   margin: auto;
@@ -37,4 +37,13 @@
 #signupFormMessage {
   color: var(--warning);
   font-weight: bold;
+}
+
+.dialog {
+  /* position: relative; */
+  border-radius: 0.5rem;
+  background-color: var(--warning);
+  font-style: italic;
+  color: var(--darkLettersColor);
+  align-self: center;
 }
