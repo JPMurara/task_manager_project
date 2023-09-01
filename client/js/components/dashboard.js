@@ -1,61 +1,97 @@
 import renderHeader from "./header.js";
 
+function renderActivity(activity_id){
+    const content = document.getElementById("main_content");
+
+    axios.get("/api/activity/get/"+activity_id).then((res) => {
+        console.log(res);
+        // create a header for the activity
+        const activity_header = document.createElement("div");
+        activity_header.classList.add("activity_header");
+        const activity_title = document.createElement("h1");
+        activity_title.textContent = res.data.activity_name;
+        activity_header.append(activity_title);
+        content.appendChild(activity_header);
+
+        //create row
+        const row = document.createElement("row");
+        row.classList.add("row");
+
+        //create to-do column
+        const todoColumn = document.createElement("div");
+        const todoHeader = document.createElement("h2");
+        todoHeader.innerHTML = `To-do <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
+        todoColumn.appendChild(todoHeader);
+        const todoseparator = document.createElement("div");
+        todoseparator.classList.add("separator");
+        todoColumn.appendChild(todoseparator);
+        todoColumn.classList.add("column");
+
+        //create doing column
+        const doingColumn = document.createElement("div");
+        const doingHeader = document.createElement("h2");
+        doingHeader.innerHTML = `Doing <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
+        doingColumn.appendChild(doingHeader);
+        const doingseparator = document.createElement("div");
+        doingseparator.classList.add("separator");
+        doingColumn.appendChild(doingseparator);
+        doingColumn.classList.add("column");
+
+        //create done column
+        const doneColumn = document.createElement("div");
+        const doneHeader = document.createElement("h2");
+        doneHeader.innerHTML = `Done <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
+        doneColumn.appendChild(doneHeader);
+        const doneseparator = document.createElement("div");
+        doneseparator.classList.add("separator");
+        doneColumn.appendChild(doneseparator);
+        doneColumn.classList.add("column");
+
+        row.append(todoColumn, doingColumn, doneColumn);
+
+        content.append(row);
+    })
+}
+
 function renderDashboard() {
     const page = document.getElementById("page");
 
+    const content = document.createElement("div");
+    content.classList.add("content");
+    content.id = "main_content";
+
     //IF NO ACTIVITY RENDER THIS OTHERWISE RENDER THE NAME ACTIVITY
-    const openai = document.createElement("section");
-    openai.id = "openaiInput";
+    const openai = document.createElement("div");
+    openai.classList.add("openai");
     openai.innerHTML = `
-      <form action="" id="formAI">
-      <input type="text" name="message" id="message" />
-      <button type="submit">Send</button>
-      </form>
-  `;
+        <form action="" id="formAI">
+            <input type="text" name="message" id="message" placeholder="Enter the kind of activity..">
+            <button type="submit">Send</button>
+        </form>
+        `;
 
-    const sidebar = document.createElement("section");
-    sidebar.id = "sidebar";
-
-    const cards = document.createElement("section");
-    cards.id = "cards";
-    cards.innerHTML = `
-        <div id="todoContainer">
-            <div class="titleContainer">
-                <p class="status">To Do</p>
-                <i class="fa-solid fa-plus iconAdd"></i>
-                <i class="fa-solid fa-pen-to-square iconEdit"></i>
-            </div>
-
-            <div id="todoTasksContainer">
-            </div>
-        </div>
-
-        <div id="inprogressContainer">
-            <div class="titleContainer">
-                <p class="status">In Progress</p>
-                <i class="fa-solid fa-plus iconAdd"></i>
-                <i class="fa-solid fa-pen-to-square iconEdit"></i>
-            </div>
-
-            <div id="inprogressTasksContainer">
-            </div>
-        </div>
-
-        <div id="completedContainer">
-            <div class="titleContainer">
-                <p class="status">Completed</p>
-                <i class="fa-solid fa-plus iconAdd"></i>
-                <i class="fa-solid fa-pen-to-square iconEdit"></i>
-            </div>
-
-            <div id="completedTaskContainer">
-            </div>
-        </div>
-  `;
-
-    page.replaceChildren(openai, cards, sidebar);
+    content.appendChild(openai);
+    page.replaceChildren(content);
+    renderSidebarActivities();
+    renderActivity(1);
     getActivity();
-    sidebarActivity();
+}
+
+function renderSidebarActivities(){
+    const page = document.getElementById("page");
+
+    const sidebar = document.createElement("div");
+    sidebar.classList.add("sidebar");
+
+    //Get activities from DB and render here
+    axios.get("/api/activity/getAll").then((res) => {
+        let activitiesAnchors = ``;
+        res.data.forEach((activity) => {
+            activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>`
+        });
+        sidebar.innerHTML = activitiesAnchors;
+    });
+    page.append(sidebar);
 }
 
 function getActivity() {
@@ -73,13 +109,6 @@ function getActivity() {
         const data = {
             activity: formData.get("message"),
         };
-
-        if (data) {
-            form.style.display = "none";
-            activityName.textContent = data.activity;
-            activityName.style.display = "block";
-            formSection.appendChild(activityName);
-        }
         renderTasks(data);
     });
 }
@@ -103,20 +132,6 @@ function renderTasks(data) {
             `;
             // Append the new task to the container
             todoTasksContainer.innerHTML += taskHTML;
-        });
-    });
-}
-
-function sidebarActivity() {
-    //Get activities from DB and render here
-    axios.get("/api/activity/getAll").then((res) => {
-        const sidebar = document.getElementById("sidebar");
-
-        res.data.forEach((name) => {
-            const activityHTML = `
-          <p class="sidebarActivity">${name.activity_name}</p>
-      `;
-            sidebar.innerHTML += activityHTML;
         });
     });
 }

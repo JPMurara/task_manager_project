@@ -9,3 +9,13 @@ body {
   height: 100vh;
   color: var(--darkLettersColor);
 }
+
+footer {
+  background-color: var(--pink);
+  color: #fff;
+  text-align: center;
+  padding: 0.5rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
