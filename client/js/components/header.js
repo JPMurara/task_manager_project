@@ -39,10 +39,10 @@ function renderHeader() {
 
     // Append navigation list to the header
     header.replaceChildren(navUl);
-    
+
     // Add event listeners to menu items
     // teams.addEventListener("click", renderTeams);
-    //login.addEventListener("click", renderAuthForms);
+    login.addEventListener("click", renderAuthForms);
     activities.addEventListener("click", renderDashboard);
 
     //Check login status and update UI

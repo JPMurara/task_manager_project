@@ -174,6 +174,7 @@ router.post("/", async (req, res) => {
             res.status(200).json({
                 message: "Activity created successfully",
                 tasks: data,
+                activity_id: activity_id,
             });
         });
     } catch (error) {
