@@ -1,10 +1,11 @@
 import renderHeader from "./header.js";
 
-function renderActivity(activity_id){
+function renderActivity(activity_id) {
     const content = document.getElementById("main_content");
 
-    axios.get("/api/activity/get/"+activity_id).then((res) => {
+    axios.get("/api/activity/get/" + activity_id).then((res) => {
         console.log(res);
+
         // create a header for the activity
         const activity_header = document.createElement("div");
         activity_header.classList.add("activity_header");
@@ -26,6 +27,19 @@ function renderActivity(activity_id){
         todoseparator.classList.add("separator");
         todoColumn.appendChild(todoseparator);
         todoColumn.classList.add("column");
+        const todoList = document.createElement("ul");
+        todoList.classList.add("startList");
+        todoColumn.appendChild(todoList);
+
+        //Render list for tasks
+        res.data.tasks.forEach((task) => {
+            const list = document.createElement("li");
+            list.textContent = task.task_name;
+            // <i class="fa-solid fa-pen-to-square iconEdit"></i>
+
+            // Append the new task to the container
+            todoList.appendChild(list);
+        });
 
         //create doing column
         const doingColumn = document.createElement("div");
@@ -50,7 +64,7 @@ function renderActivity(activity_id){
         row.append(todoColumn, doingColumn, doneColumn);
 
         content.append(row);
-    })
+    });
 }
 
 function renderDashboard() {
@@ -73,11 +87,10 @@ function renderDashboard() {
     content.appendChild(openai);
     page.replaceChildren(content);
     renderSidebarActivities();
-    renderActivity(1);
     getActivity();
 }
 
-function renderSidebarActivities(){
+function renderSidebarActivities() {
     const page = document.getElementById("page");
 
     const sidebar = document.createElement("div");
@@ -87,8 +100,11 @@ function renderSidebarActivities(){
     axios.get("/api/activity/getAll").then((res) => {
         let activitiesAnchors = ``;
         res.data.forEach((activity) => {
-            activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>`
+            //Declared the renderActivity() as global scope on the bottom of the page
+
+            activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>`;
         });
+
         sidebar.innerHTML = activitiesAnchors;
     });
     page.append(sidebar);
@@ -97,11 +113,6 @@ function renderSidebarActivities(){
 function getActivity() {
     const form = document.querySelector("form");
 
-    const formSection = document.querySelector("#openaiInput");
-
-    //Only show the name if activity exists
-    const activityName = document.createElement("h2");
-
     form.addEventListener("submit", (e) => {
         e.preventDefault();
 
@@ -109,31 +120,11 @@ function getActivity() {
         const data = {
             activity: formData.get("message"),
         };
-        renderTasks(data);
+        //POST ACTIVITY NAME
+        axios.post("/api/activity", data);
     });
 }
 
-function renderTasks(data) {
-    axios.post("/api/activity", data).then((res) => {
-        console.log(res.data.tasks);
-
-        const tasks = res.data.tasks;
-
-        const todoTasksContainer =
-            document.getElementById("todoTasksContainer");
-
-        tasks.forEach((task) => {
-            // Create the new task HTML
-            const taskHTML = `
-                <div class="taskEl">
-                    <p class="taskName">${task}</p>
-                    <i class="fa-solid fa-pen-to-square iconEdit"></i>
-                </div>
-            `;
-            // Append the new task to the container
-            todoTasksContainer.innerHTML += taskHTML;
-        });
-    });
-}
+window.renderActivity = renderActivity;
 
 export default renderDashboard;
