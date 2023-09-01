@@ -65,8 +65,6 @@ function signupEventListener(form) {
     const message = document.getElementById("signupFormMessage");
     const errorDialog = form.querySelector(".dialog");
     const errorMessage = form.querySelector(".errorMessage");
-    //Clear previous error messages
-    message.innerText = "";
     //Data Collection
     const data = Object.fromEntries(new FormData(form));
     // checks if passwords match
@@ -83,7 +81,6 @@ function signupEventListener(form) {
           })
           .catch((error) => {
             // Handle errors from the server response
-            // message.innerText = error.response.data.message;
             errorDialog.showModal();
             errorMessage.innerText = error.response.data.message;
             setTimeout(() => {
@@ -93,12 +90,11 @@ function signupEventListener(form) {
             confirmPassword.value = "";
           });
       } else {
-        // message.innerText =
-        // "Password not strong enough. Try again.\nPassword has to contain at least:\nONE uppercase and ONE lowercase\nONE numer\nONE special character (@,$,!,%,*,?,&)\nFOUR characters in lenght";
         const message =
           "Password has to contain at least:\n1 uppercase and 1 lowercase\n1 numer\n1 special character (@,$,!,%,*,?,&)\n4 characters in lenght";
         errorDialog.showModal();
         errorMessage.innerText = message;
+
         setTimeout(() => {
           errorDialog.close();
         }, "8000");
@@ -106,7 +102,6 @@ function signupEventListener(form) {
         confirmPassword.value = "";
       }
     } else {
-      // message.innerText = "Password do not match. Try again.";
       const message = "Password do not match. Try again";
       errorDialog.showModal();
       errorMessage.innerText = message;

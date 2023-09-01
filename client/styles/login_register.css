@@ -40,9 +40,10 @@
 }
 
 .dialog {
+  /* position: relative; */
   border-radius: 0.5rem;
   background-color: var(--warning);
   font-style: italic;
   color: var(--darkLettersColor);
-  margin-top: 5rem;
+  align-self: center;
 }
