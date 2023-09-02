@@ -1,3 +1,4 @@
+import renderAuthForms from "./authForms.js";
 import renderHeader from "./header.js";
 
 function renderLogout() {
@@ -7,6 +8,7 @@ function renderLogout() {
       console.log("logging out");
       //BACK TO HOME PAGE AND REFRESH HEADER
       renderHeader();
+      renderAuthForms();
     })
     .catch((error) => {
       console.error("Error logging out:", error.message);

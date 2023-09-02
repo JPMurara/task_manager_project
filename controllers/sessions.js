@@ -59,11 +59,12 @@ router.post("/", (req, res) => {
 //GET SESSION NAME FOR FRONT-END ex. "Logged in as Bruno"
 router.get("/status", (req, res) => {
   if (!req.session.sessionUser.isAuthenticated) {
-    return res.status(400).json({ message: "Not logged in" });
+    return res.status(401).json({ message: "Not logged in" });
   }
   res.json({
     email: req.session.sessionUser.email,
     name: req.session.sessionUser.name,
+    isAuthenticated: req.session.sessionUser.isAuthenticated,
   });
 });
 
