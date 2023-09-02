@@ -1,3 +1,4 @@
+
 import renderHeader from "./header.js";
 
 function renderDashboard() {
@@ -106,30 +107,59 @@ function renderActivity(activity_id) {
         row.append(todoColumn, doingColumn, doneColumn);
 
         content.append(row);
+
     });
+
+    //create doing column
+    const doingColumn = document.createElement("div");
+    const doingHeader = document.createElement("h2");
+    doingHeader.innerHTML = `Doing <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
+    doingColumn.appendChild(doingHeader);
+    const doingseparator = document.createElement("div");
+    doingseparator.classList.add("separator");
+    doingColumn.appendChild(doingseparator);
+    doingColumn.classList.add("column");
+
+    //create done column
+    const doneColumn = document.createElement("div");
+    const doneHeader = document.createElement("h2");
+    doneHeader.innerHTML = `Done <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
+    doneColumn.appendChild(doneHeader);
+    const doneseparator = document.createElement("div");
+    doneseparator.classList.add("separator");
+    doneColumn.appendChild(doneseparator);
+    doneColumn.classList.add("column");
+
+    row.append(todoColumn, doingColumn, doneColumn);
+
+    content.append(row);
+  });
 }
 
+
+
 function renderSidebarActivities() {
-    const page = document.getElementById("page");
+  const page = document.getElementById("page");
 
-    const sidebar = document.createElement("div");
-    sidebar.classList.add("sidebar");
+  const sidebar = document.createElement("div");
+  sidebar.classList.add("sidebar");
 
-    //Get activities from DB and render here
-    axios.get("/api/activity/getAll").then((res) => {
-        let activitiesAnchors = ``;
-        res.data.forEach((activity) => {
-            //Declared the renderActivity() as global scope on the bottom of the page
+  //Get activities from DB and render here
+  axios.get("/api/activity/getAll").then((res) => {
+    let activitiesAnchors = ``;
+    res.data.forEach((activity) => {
+      //Declared the renderActivity() as global scope on the bottom of the page
 
-            activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>`;
-        });
-
-        sidebar.innerHTML = activitiesAnchors;
+      activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>`;
     });
-    page.append(sidebar);
+
+    sidebar.innerHTML = activitiesAnchors;
+  });
+  page.append(sidebar);
 }
 
 function getActivity() {
+
     const form = document.querySelector("form");
 
     form.addEventListener("submit", (e) => {
@@ -279,6 +309,7 @@ function editTask(task) {
                 console.error(error);
             });
     });
+
 }
 
 window.renderActivity = renderActivity;

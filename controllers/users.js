@@ -14,6 +14,8 @@ const router = express.Router();
 router.post("/signup", (req, res) => {
   //Deconstruct the form
   const { name, signupEmail, signupPassword, confirmPassword } = req.body;
+
+  // checks if any of the inputs are missing
   if (!name || !signupEmail || !signupPassword || !confirmPassword) {
     return res.status(400).json({
       success: false,
@@ -22,13 +24,14 @@ router.post("/signup", (req, res) => {
   }
   // check if passwords match
   if (signupPassword === confirmPassword) {
-    const checkedPassword = isStrongPassword(signupPassword);
     // check if password is strong
+    const checkedPassword = isStrongPassword(signupPassword);
     if (checkedPassword) {
       //Hash password with bcrypt
       const hashPassword = generateHash(signupPassword);
+      // creates newUser object
       const newUser = { name, signupEmail, hashPassword: hashPassword };
-      // checks if user already exists
+      // checks if user already exists before inserting in the DB
       const sql = `SELECT * FROM users where email=$1`;
       db.query(sql, [newUser.signupEmail]).then((dbRes) => {
         if (dbRes.rows.length > 0) {
@@ -37,7 +40,7 @@ router.post("/signup", (req, res) => {
             message: "User alredy registered. Please go to Login area",
           });
         } else {
-          //SQL query to insert user into the database
+          //insert new user into the database
           const sql = `
                 INSERT INTO users (name, email, hash_password)
                 VALUES ($1, $2, $3);

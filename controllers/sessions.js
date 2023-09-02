@@ -24,7 +24,7 @@ router.post("/", (req, res) => {
           message: "User not registered yet",
         });
       }
-      //   checks if the password matches with DB password
+      // checks if the password matches with DB password
       const hashedPassword = dbRes.rows[0].hash_password;
       const validPassword = isValidPassword(loginPassword, hashedPassword);
       if (validPassword) {
@@ -51,19 +51,21 @@ router.post("/", (req, res) => {
     .catch((error) => {
       res.status(500).json({
         success: false,
-        message: "Internal server error",
+        message: error,
       });
     });
 });
 
 //GET SESSION NAME FOR FRONT-END ex. "Logged in as Bruno"
 router.get("/status", (req, res) => {
-  if (!req.session.isAuthenticated) {
-    return res.status(400).json({ message: "Not logged in" });
+  console.log("req session", req.session);
+  if (!req.session.sessionUser || !req.session.sessionUser.isAuthenticated) {
+    return res.status(200).json({ message: "Not logged in" });
   }
   res.json({
-    email: req.session.email,
-    name: req.session.name,
+    email: req.session.sessionUser.email,
+    name: req.session.sessionUser.name,
+    isAuthenticated: req.session.sessionUser.isAuthenticated,
   });
 });
 

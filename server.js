@@ -23,21 +23,21 @@ const teamsRoute = require("./controllers/teams.js");
 const membersRoute = require("./controllers/members.js");
 
 app.use(
-    expressSession({
-        store: new pgSession({
-            pool: db,
-            createTableIfMissing: true,
-        }),
-        secret: process.env.EXPRESS_SESSION_SECRET_KEY,
-    })
+  expressSession({
+    store: new pgSession({
+      pool: db,
+      createTableIfMissing: true,
+    }),
+    secret: process.env.EXPRESS_SESSION_SECRET_KEY,
+  })
 );
 
 //Middleware, middle of user getting the response
 app.use((req, res, next) => {
-    console.log(` \u001b[30m${new Date()} \u001b[33m${req.method} ${req.path}`);
+  console.log(` \u001b[30m${new Date()} \u001b[33m${req.method} ${req.path}`);
 
-    //Go to the next middleware
-    next();
+  //Go to the next middleware
+  next();
 });
 
 //CLIENT STATIC HTML first page user will see
@@ -55,15 +55,15 @@ app.use("/api/team/members", membersRoute);
 
 //Error middleware
 app.use((err, req, res, next) => {
-    console.log("An error occur");
-    console.log(err);
+  console.log("An error occur");
+  console.log(err);
 
-    res.status(500).json({ message: "error", success: false });
+  res.status(500).json({ message: "error", success: false });
 
-    next();
+  next();
 });
 
 //Run on port 3000
 app.listen(port, () => {
-    console.log(`App running on http://localhost:${port}`);
+  console.log(`App running on http://localhost:${port}`);
 });
