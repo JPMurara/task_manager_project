@@ -30,7 +30,7 @@ export default function renderHeader() {
         <i class="fa-regular fa-user"></i>
     </div>
     <div class="dropdown-content">
-        <a href="#"><i class="fa-solid fa-right-from-bracket"></i></a>
+        <a><i class="fa-solid fa-right-from-bracket"></i></a>
     </div>`;
   // Append list items to the navigation list
   navUl.append(logo, activities, teams, login);
@@ -68,13 +68,16 @@ export function loginStatus() {
 
       const navUl = document.querySelector(".nav-list");
       navUl.append(loginInfo, logout);
+
+      loginBtn.style.display = "none";
     })
     .catch((err) => {
       if (err.response && err.response.status === 401) {
         console.log("User is not logged in");
         // loginInfo.textContent = "";
       } else {
-        console.warn("An error occurred while checking login status:", err);
+        console.log("An error occurred while checking login status:", err);
+        // console.warn("An error occurred while checking login status:", err);
       }
     });
 }

@@ -5,8 +5,8 @@ import renderDashboard from "./components/dashboard.js";
 axios
   .get("/api/sessions/status")
   .then((response) => {
-    const { isAuthenticated } = response.data;
-    if (!isAuthenticated) {
+    console.log("response", response);
+    if (!response || !response.data.isAuthenticated) {
       renderHeader();
       renderAuthForms();
     } else {
@@ -15,7 +15,6 @@ axios
     }
   })
   .catch((err) => {
-    console.log("user no authenticated", err);
-    renderHeader();
-    renderAuthForms();
+    console.log("sorry an error occured", err);
+    console.debug(err);
   });

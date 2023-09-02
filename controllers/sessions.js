@@ -51,15 +51,16 @@ router.post("/", (req, res) => {
     .catch((error) => {
       res.status(500).json({
         success: false,
-        message: "Internal server error",
+        message: error,
       });
     });
 });
 
 //GET SESSION NAME FOR FRONT-END ex. "Logged in as Bruno"
 router.get("/status", (req, res) => {
-  if (!req.session.sessionUser.isAuthenticated) {
-    return res.status(401).json({ message: "Not logged in" });
+  console.log("req session", req.session);
+  if (!req.session.sessionUser || !req.session.sessionUser.isAuthenticated) {
+    return res.status(200).json({ message: "Not logged in" });
   }
   res.json({
     email: req.session.sessionUser.email,
