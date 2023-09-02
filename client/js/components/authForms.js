@@ -1,5 +1,5 @@
 import renderDashboard from "./dashboard.js";
-import renderHeader from "./header.js";
+import { loginStatus } from "./header.js";
 
 function renderAuthForms() {
   const page = document.getElementById("page");
@@ -78,6 +78,7 @@ function signupEventListener(form) {
             message.innerText = response.data.message;
             //Render a modal to confirm the account creation
             renderDashboard();
+            loginStatus();
           })
           .catch((error) => {
             // Handle errors from the server response
@@ -132,6 +133,7 @@ function loginEventListener(form) {
     axios
       .post("/api/sessions", data)
       .then((response) => {
+        loginStatus();
         renderDashboard();
       })
       .catch((error) => {

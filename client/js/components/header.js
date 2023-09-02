@@ -2,7 +2,7 @@ import renderAuthForms from "./authForms.js";
 import renderLogout from "./logout.js";
 import renderDashboard from "./dashboard.js";
 
-function renderHeader() {
+export default function renderHeader() {
   const header = document.getElementById("header-nav");
 
   const navUl = document.createElement("ul");
@@ -30,7 +30,6 @@ function renderHeader() {
         <i class="fa-regular fa-user"></i>
     </div>
     <div class="dropdown-content">
-        <p>PLACEHOLDER</p>
         <a href="#"><i class="fa-solid fa-right-from-bracket"></i></a>
     </div>`;
   // Append list items to the navigation list
@@ -54,7 +53,7 @@ function renderHeader() {
 }
 
 //Check login status and update UI
-function loginStatus() {
+export function loginStatus() {
   axios
     .get("/api/sessions/status")
     .then((response) => {
@@ -80,4 +79,8 @@ function loginStatus() {
     });
 }
 
-export default renderHeader;
+// export default renderHeader;
+// module.exports = {
+//   renderHeader,
+//   loginStatus,
+// };

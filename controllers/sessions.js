@@ -24,7 +24,7 @@ router.post("/", (req, res) => {
           message: "User not registered yet",
         });
       }
-      //   checks if the password matches with DB password
+      // checks if the password matches with DB password
       const hashedPassword = dbRes.rows[0].hash_password;
       const validPassword = isValidPassword(loginPassword, hashedPassword);
       if (validPassword) {
@@ -58,12 +58,14 @@ router.post("/", (req, res) => {
 
 //GET SESSION NAME FOR FRONT-END ex. "Logged in as Bruno"
 router.get("/status", (req, res) => {
-  if (!req.session.isAuthenticated) {
+  console.log("here!!!", req.session.sessionUser.isAuthenticated);
+  if (!req.session.sessionUser.isAuthenticated) {
     return res.status(400).json({ message: "Not logged in" });
   }
+  console.log("after the not isAuth");
   res.json({
-    email: req.session.email,
-    name: req.session.name,
+    email: req.session.sessionUser.email,
+    name: req.session.sessionUser.name,
   });
 });
 

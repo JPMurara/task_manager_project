@@ -1,3 +1,3 @@
-import { renderHeader } from "./components/header.js";
+import renderHeader from "./components/header.js";
 
 renderHeader();
