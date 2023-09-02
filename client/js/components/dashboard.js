@@ -178,16 +178,11 @@ function renderLastActivity() {
 }
 
 function editTask(task) {
-    console.log(task);
     // Create elements
     const dialog = document.createElement("dialog");
-    dialog.style.display = "flex";
 
     const form = document.createElement("form");
     form.id = "editTaskForm";
-    form.action = "/api/task/update/" + task.task_id; // or wherever your backend route is
-    form.method = "PUT";
-
     form.innerHTML = `
         <label for="edit_task_name">Name:</label>
         <input type="text" id="edit_task_name" name="task_name" value="${
@@ -235,7 +230,7 @@ function editTask(task) {
             task.due_date || ""
         }">
 
-        <input type="submit" value="Save">
+        <input type="submit" id="saveEditTask" value="Save">
     `;
 
     const closeBtn = document.createElement("button");
@@ -258,6 +253,31 @@ function editTask(task) {
     closeBtn.addEventListener("click", function () {
         dialog.close();
         document.body.removeChild(dialog); // Optional: remove dialog from DOM after closing
+    });
+
+    //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
+
+    document.getElementById("saveEditTask").addEventListener("click", () => {
+        const taskData = {
+            task_name: document.getElementById("edit_task_name").value,
+            task_description: document.getElementById("edit_task_description")
+                .value,
+            task_status: document.getElementById("edit_task_status").value,
+            task_priority: document.getElementById("edit_task_priority").value,
+            assigned_to: document.getElementById("edit_assigned_to").value,
+            due_date: document.getElementById("edit_due_date").value,
+            updated_at: new Date().toISOString().slice(0, 19).replace("T", " "), // Format: 'YYYY-MM-DD HH:MM:SS'
+        };
+
+        axios
+            .put("/api/activities/task/update/" + task.task_id, taskData)
+            .then((response) => {
+                dialog.close();
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     });
 }
 
