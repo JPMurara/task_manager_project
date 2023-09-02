@@ -60,13 +60,18 @@ function renderAuthForms() {
 function signupEventListener(form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    // get elements from the html form
+    const name = form.querySelector("#name");
+    const email = form.querySelector("#signupEmail");
     const password = form.querySelector("#signupPassword");
     const confirmPassword = form.querySelector("#confirmPassword");
-    const message = document.getElementById("signupFormMessage");
+    // const message = document.getElementById("signupFormMessage");
     const errorDialog = form.querySelector(".dialog");
     const errorMessage = form.querySelector(".errorMessage");
+
     //Data Collection
     const data = Object.fromEntries(new FormData(form));
+
     // checks if passwords match
     if (password.value === confirmPassword.value) {
       // checks if password is strong
@@ -75,10 +80,16 @@ function signupEventListener(form) {
         axios
           .post("/api/users/signup", data)
           .then((response) => {
-            message.innerText = response.data.message;
+            errorMessage.innerText = response.data.message;
             //Render a modal to confirm the account creation
-            renderDashboard();
-            loginStatus();
+            errorDialog.showModal();
+            setTimeout(() => {
+              errorDialog.close();
+            }, "3000");
+            name.value = "";
+            email.value = "";
+            password.value = "";
+            confirmPassword.value = "";
           })
           .catch((error) => {
             // Handle errors from the server response
@@ -92,10 +103,9 @@ function signupEventListener(form) {
           });
       } else {
         const message =
-          "Password has to contain at least:\n1 uppercase and 1 lowercase\n1 numer\n1 special character (@,$,!,%,*,?,&)\n4 characters in lenght";
+          "Password has to contain at least:\n1 uppercase and 1 lowercase\n1 number\n1 special character (@,$,!,%,*,?,&)\n4 characters in lenght";
         errorDialog.showModal();
         errorMessage.innerText = message;
-
         setTimeout(() => {
           errorDialog.close();
         }, "8000");
