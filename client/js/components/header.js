@@ -36,15 +36,13 @@ function renderHeader() {
   // Append list items to the navigation list
   navUl.append(logo, activities, teams, login);
 
+  // Append navigation list to the header
+  header.replaceChildren(navUl);
 
-    // Append navigation list to the header
-    header.replaceChildren(navUl);
-
-    // Add event listeners to menu items
-    // teams.addEventListener("click", renderTeams);
-    login.addEventListener("click", renderAuthForms);
-    activities.addEventListener("click", renderDashboard);
-
+  // Add event listeners to menu items
+  // teams.addEventListener("click", renderTeams);
+  login.addEventListener("click", renderAuthForms);
+  activities.addEventListener("click", renderDashboard);
 
   // Add event listeners to menu items
   // teams.addEventListener("click", renderTeams);
