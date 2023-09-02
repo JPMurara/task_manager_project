@@ -72,7 +72,7 @@ export function loginStatus() {
     .catch((err) => {
       if (err.response && err.response.status === 401) {
         console.log("User is not logged in");
-        loginInfo.textContent = "";
+        // loginInfo.textContent = "";
       } else {
         console.warn("An error occurred while checking login status:", err);
       }

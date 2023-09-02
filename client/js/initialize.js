@@ -15,8 +15,7 @@ axios
     }
   })
   .catch((err) => {
-    console.log("error", err);
+    console.log("user no authenticated", err);
+    renderHeader();
+    renderAuthForms();
   });
-
-renderAuthForms();
-renderHeader();
