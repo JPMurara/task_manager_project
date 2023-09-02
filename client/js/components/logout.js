@@ -1,5 +1,5 @@
 import renderAuthForms from "./authForms.js";
-import renderHeader from "./header.js";
+import { renderHeader } from "./header.js";
 
 function renderLogout() {
   axios
