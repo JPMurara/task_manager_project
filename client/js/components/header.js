@@ -54,7 +54,7 @@ function loginStatus() {
     .get("/api/sessions/status")
     .then((response) => {
       const { name } = response.data;
-      console.log("name is:", name);
+
       const logout = document.createElement("li");
       logout.textContent = "Logout";
       logout.addEventListener("click", renderLogout);
