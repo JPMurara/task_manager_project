@@ -58,11 +58,9 @@ router.post("/", (req, res) => {
 
 //GET SESSION NAME FOR FRONT-END ex. "Logged in as Bruno"
 router.get("/status", (req, res) => {
-  console.log("here!!!", req.session.sessionUser.isAuthenticated);
   if (!req.session.sessionUser.isAuthenticated) {
     return res.status(400).json({ message: "Not logged in" });
   }
-  console.log("after the not isAuth");
   res.json({
     email: req.session.sessionUser.email,
     name: req.session.sessionUser.name,

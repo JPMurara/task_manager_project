@@ -1,5 +1,3 @@
-import renderHeader from "./header.js";
-
 function renderActivity(activity_id) {
   const content = document.getElementById("main_content");
 

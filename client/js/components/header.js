@@ -78,9 +78,3 @@ export function loginStatus() {
       }
     });
 }
-
-// export default renderHeader;
-// module.exports = {
-//   renderHeader,
-//   loginStatus,
-// };
