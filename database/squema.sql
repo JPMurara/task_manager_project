@@ -55,3 +55,6 @@ ADD COLUMN team_id INTEGER REFERENCES teams(team_id);
 
 ALTER TABLE tasks
 ADD CONSTRAINT unique_task_name_per_activity UNIQUE (activity_id, task_name);
+
+ALTER TABLE activities
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
