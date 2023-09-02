@@ -97,6 +97,39 @@ router.get("/get/:activity_id", (req, res) => {
         });
 });
 
+router.get("/getLast", (req, res) => {
+    // SQL query to fetch the most recent activity
+    const sql = `
+        SELECT
+            a.activity_id,
+            a.activity_name,
+            COUNT(CASE WHEN t.tasks_status = 'pending' THEN 1 ELSE NULL END) AS pending_count,
+            COUNT(CASE WHEN t.tasks_status = 'in_progress' THEN 1 ELSE NULL END) AS in_progress_count,
+            COUNT(CASE WHEN t.tasks_status = 'completed' THEN 1 ELSE NULL END) AS completed_count
+        FROM activities a
+        LEFT JOIN tasks t ON a.activity_id = t.activity_id
+        GROUP BY a.activity_id, a.activity_name
+        ORDER BY a.created_at DESC
+        LIMIT 1;
+    `;
+
+    // Query the database with sql
+    db.query(sql)
+        .then((result) => {
+            if (result.rows.length > 0) {
+                res.status(200).json(result.rows[0]);
+            } else {
+                res.status(404).json({ message: "No activity found" });
+            }
+        })
+        .catch((error) => {
+            console.error("Database error encountered:", error);
+            res.status(500).json({
+                message: "An error occurred while fetching the last activity",
+            });
+        });
+});
+
 router.get("/tasks", async (req, res) => {
     const sql = `SELECT task_name FROM tasks ORDER BY id DESC LIMIT 5`;
 
