@@ -124,12 +124,7 @@ function loginEventListener(form) {
     const errorDialog = form.querySelector(".dialog");
     const errorMessage = form.querySelector(".errorMessage");
 
-    // const formData = new FormData(form);
     const data = Object.fromEntries(new FormData(form));
-    // const data = {
-    //   email: formData.get("email"),
-    //   password: formData.get("password"),
-    // };
     axios
       .post("/api/sessions", data)
       .then((response) => {
