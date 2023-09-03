@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS teams (
     CONSTRAINT unique_team_name UNIQUE (team_name)
 );
 
-
 CREATE TABLE IF NOT EXISTS members (
     member_id SERIAL PRIMARY Key,
     is_leader BOOLEAN,
