@@ -2,7 +2,7 @@
 const express = require("express");
 
 //Connect with database
-const db = require("../database/db.js");
+const { db } = require("../database/db.js");
 
 //bcrypt for password encryption
 const bcrypt = require("bcrypt");

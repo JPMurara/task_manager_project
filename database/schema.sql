@@ -1,5 +1,3 @@
-CREATE DATABASE task_manager;
-
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -28,8 +26,17 @@ CREATE TABLE IF NOT EXISTS activities (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TYPE task_status AS ENUM ('pending', 'in_progress', 'completed');
-CREATE TYPE priority AS ENUM ('low', 'medium', 'high');
+-- DO and END define the code block (function) in postgres that creates the enumerated types if they dont already exist
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'task_status') THEN
+        CREATE TYPE task_status AS ENUM ('pending', 'in_progress', 'completed');
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'priority') THEN
+        CREATE TYPE priority AS ENUM ('low', 'medium', 'high');
+    END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
