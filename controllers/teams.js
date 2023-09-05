@@ -92,9 +92,14 @@ router.get("/get/:team_id", async (req, res) => {
     const activitiesQuery = `
       SELECT 
         a.activity_id,
-        a.activity_name
+        a.activity_name,
+        COUNT(CASE WHEN tks.tasks_status = 'pending' THEN 1 ELSE NULL END) AS num_pending_tasks,
+        COUNT(CASE WHEN tks.tasks_status = 'in_progress' THEN 1 ELSE NULL END) AS num_in_progress_tasks,
+        COUNT(CASE WHEN tks.tasks_status = 'completed' THEN 1 ELSE NULL END) AS num_completed_tasks
       FROM activities a
+      LEFT JOIN tasks tks ON a.activity_id = tks.activity_id
       WHERE a.team_id = $1
+      GROUP BY a.activity_id, a.activity_name
     `;
 
     // Execute queries
@@ -126,6 +131,9 @@ router.get("/get/:team_id", async (req, res) => {
       activities: activitiesData.map((row) => ({
         activity_id: row.activity_id,
         activity_name: row.activity_name,
+        num_pending_tasks: row.num_pending_tasks,
+        num_in_progress_tasks: row.num_in_progress_tasks,
+        num_completed_tasks: row.num_completed_tasks,
       })),
     };
 

@@ -59,7 +59,7 @@ button:hover {
 }
 
 .sidebar a,
-i {
+.sidebar i {
   display: block;
   color: var(--beige);
   padding: 16px;
