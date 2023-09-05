@@ -123,7 +123,6 @@ function renderActivity(activity_id) {
 
     //Render list for tasks
     res.data.tasks.forEach((task) => {
-      console.log("task status:::", task);
       const list = document.createElement("li");
       list.innerHTML = `${
         task.task_name
@@ -156,13 +155,21 @@ function renderSidebarActivities() {
 
   //Get activities from DB and render here
   axios.get("/api/activity/getAll").then((res) => {
-    let activitiesAnchors = ``;
+    // let activitiesAnchors = ``;
+
     res.data.forEach((activity) => {
       //Declared the renderActivity() and deleteActivity() as global scope on the bottom of the page
-      activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}<i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i></a>`;
+      const activityContainer = document.createElement("div");
+      activityContainer.classList.add("activityContainer");
+      activityContainer.innerHTML = `
+      <a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
+      <i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i>
+      `;
+      // activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a><i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i>`;
+      sidebar.appendChild(activityContainer);
     });
 
-    sidebar.innerHTML = activitiesAnchors;
+    // sidebar.innerHTML = activitiesAnchors;
   });
   page.append(sidebar);
 }
@@ -171,8 +178,9 @@ function renderSidebarActivities() {
 function deleteActivity(activity_id) {
   const errorDialog = document.querySelector("#formsContainerDialog");
   const errorMessage = document.querySelector(".errorMessage");
+  console.log("activity id", activity_id);
   axios
-    .delete(`/delete/${activity_id}`)
+    .delete("/api/activity/delete/" + activity_id)
     .then((res) => {
       renderSidebarActivities();
     })

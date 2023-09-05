@@ -450,30 +450,35 @@ router.put("/task/update/:task_id", (req, res) => {
 });
 
 //route to delete activity
-router.delete("/delete/:activty_id", (req, res) => {
-  //activity_id initializing
-  const activty_id = req.params.activty_id;
+router.delete("/delete/:activity_id", async (req, res) => {
+  const activity_id = req.params.activity_id;
 
-  //SQL query to delete the activity from database
-  const sql = `
-          DELETE FROM activties
-          WHERE activity_id = $1`;
-
-  //ERROR HANDLING: checking if activty_id was provided
-  if (!activty_id || activty_id == 0)
+  if (!activity_id || activity_id == 0) {
     return res.status(400).json({
       message: "Failed to locate Activity!",
     });
+  }
 
-  //Query the database with sql and values
-  db.query(sql, [activty_id])
-    .then(() => {
-      res.status(200).json({ message: "Actvity deleted successfully" });
-    })
-    .catch((err) => {
-      console.error("database error encountered: ", err);
-      res.status(500).json({ message: err });
-    });
+  try {
+    // First, delete tasks associated with the activity
+    const deleteTasksQuery = {
+      text: "DELETE FROM tasks WHERE activity_id = $1",
+      values: [activity_id],
+    };
+    await db.query(deleteTasksQuery);
+
+    // Then, delete the activity
+    const deleteActivityQuery = {
+      text: "DELETE FROM activities WHERE activity_id = $1",
+      values: [activity_id],
+    };
+    await db.query(deleteActivityQuery);
+
+    res.status(200).json({ message: "Activity deleted successfully" });
+  } catch (err) {
+    console.error("Database error encountered: ", err);
+    res.status(500).json({ message: err });
+  }
 });
 
 //route to delete task
