@@ -149,27 +149,20 @@ function renderActivity(activity_id) {
 
 function renderSidebarActivities() {
   const page = document.getElementById("page");
-
   const sidebar = document.createElement("div");
   sidebar.classList.add("sidebar");
-
   //Get activities from DB and render here
   axios.get("/api/activity/getAll").then((res) => {
-    // let activitiesAnchors = ``;
-
     res.data.forEach((activity) => {
       //Declared the renderActivity() and deleteActivity() as global scope on the bottom of the page
       const activityContainer = document.createElement("div");
       activityContainer.classList.add("activityContainer");
       activityContainer.innerHTML = `
-      <a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
+      <a href="" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
       <i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i>
       `;
-      // activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a><i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i>`;
       sidebar.appendChild(activityContainer);
     });
-
-    // sidebar.innerHTML = activitiesAnchors;
   });
   page.append(sidebar);
 }
