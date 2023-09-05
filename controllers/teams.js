@@ -34,46 +34,106 @@ router.get("/getAll", (req, res) => {
     });
 });
 
-router.get("/get/:team_id", (req, res) => {
+router.get("/getTeamsForUser/:user_id", (req, res) => {
+  const userId = req.params.user_id;
+
+  // SQL query to select teams for a specific user
+  const sql = `
+    SELECT
+      t.team_id,
+      t.team_name
+    FROM teams t
+    INNER JOIN members m ON t.team_id = m.team_id
+    LEFT JOIN activities a ON t.team_id = a.team_id
+    WHERE m.user_id = $1
+    GROUP BY t.team_id, t.team_name
+  `;
+
+  // Query the database with sql and values
+  db.query(sql, [userId])
+    .then((result) => {
+      res.status(200).json(result.rows);
+    })
+    .catch((err) => {
+      console.error("Database error encountered:", err);
+      res.status(500).json({ message: "An error occurred while fetching teams" });
+    });
+});
+
+
+
+router.get("/get/:team_id", async (req, res) => {
   //team_id initializing
   const team_id = req.params.team_id;
 
-  //SQL query to get team using team_id along with team members the team in database
-  const sql = `
-        SELECT 
-            t.team_id,
-            t.team_name,
-            m.is_leader,
-            u.name AS user_name,
-            u.email AS user_email
-        FROM teams t
-        LEFT JOIN members m ON t.team_id = m.team_id
-        LEFT JOIN users u ON m.user_id = u.user_id
-        WHERE t.team_id = $1
-        `;
+  try {
+    // Query to get team information
+    const teamQuery = `
+      SELECT 
+        t.team_id,
+        t.team_name
+      FROM teams t
+      WHERE t.team_id = $1
+    `;
 
-  //Query the database with sql and values
-  db.query(sql, [team_id])
-    .then((result) => {
-      if (result.rows.length === 0) {
-        return res.status(404).json({ message: "Team not found" });
-      }
-      const team = {
-        team_id: result.rows[0].team_id,
-        team_name: result.rows[0].team_name,
-        members: result.rows.map((row) => ({
-          is_leader: row.is_leader,
-          user_name: row.user_name,
-          user_email: row.user_email,
-        })),
-      };
+    // Query to get team members
+    const membersQuery = `
+      SELECT 
+        m.member_id,
+        m.is_leader,
+        u.name AS user_name,
+        u.email AS user_email
+      FROM members m
+      LEFT JOIN users u ON m.user_id = u.user_id
+      WHERE m.team_id = $1
+    `;
 
-      res.status(200).json(team);
-    })
-    .catch((err) => {
-      console.error("database error encountered: ", err);
-      res.status(500).json({ message: err });
-    });
+    // Query to get team activities
+    const activitiesQuery = `
+      SELECT 
+        a.activity_id,
+        a.activity_name
+      FROM activities a
+      WHERE a.team_id = $1
+    `;
+
+    // Execute queries
+    const [teamResult, membersResult, activitiesResult] = await Promise.all([
+      db.query(teamQuery, [team_id]),
+      db.query(membersQuery, [team_id]),
+      db.query(activitiesQuery, [team_id]),
+    ]);
+
+    // Extract data from results
+    const teamData = teamResult.rows[0];
+    const membersData = membersResult.rows;
+    const activitiesData = activitiesResult.rows;
+
+    if (!teamData) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    // Construct the team object
+    const team = {
+      team_id: teamData.team_id,
+      team_name: teamData.team_name,
+      members: membersData.map((row) => ({
+        member_id: row.member_id,
+        is_leader: row.is_leader,
+        user_name: row.user_name,
+        user_email: row.user_email,
+      })),
+      activities: activitiesData.map((row) => ({
+        activity_id: row.activity_id,
+        activity_name: row.activity_name,
+      })),
+    };
+
+    res.status(200).json(team);
+  } catch (error) {
+    console.error("Database error encountered: ", error);
+    res.status(500).json({ message: error.message });
+  }
 });
 
 router.post("/", (req, res) => {
