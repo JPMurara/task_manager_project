@@ -1,93 +1,105 @@
-.openai{
-    height: 60px; 
-    background-color: var(--pink600);
-    border: 0px;
-    border-radius: 8px;
-    padding: 20px;
+.formsContainer {
+  display: flex;
+  height: 60px;
+  background-color: var(--pink600);
+  border: 0px;
+  border-radius: 8px;
+  padding: 20px;
+  justify-content: space-around;
 }
 
-form{
-    padding: 10px;
+.openai {
+  width: 100%;
 }
 
-#message {
-    display: inline-block;
-    width: calc(100% - 130px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+.userAddActivityForm {
+  width: 100%;
+}
+
+form {
+  padding: 10px;
+}
+
+#message,
+#userActivity {
+  display: inline-block;
+  width: calc(100% - 130px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 button {
-    display: inline-block;
-    background-color: var(--green600);
-    color: #fff;
-    border: 0px;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
+  display: inline-block;
+  background-color: var(--green600);
+  color: #fff;
+  border: 0px;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 button:hover {
-    border: 0px;
-    background-color: var(--beige);
+  border: 0px;
+  background-color: var(--beige);
 }
 
 .sidebar {
-    margin: 0;
-    padding: 0;
-    width: 200px;
-    background-color: var(--pink600);
-    position: fixed;
-    height: 100%;
-    overflow: auto;
-}
-  
-.sidebar a {
-    display: block;
-    color: var(--beige);
-    padding: 16px;
-    text-decoration: none;
-}
-   
-.sidebar a.active {
-    background-color: var(--green);
-    color: white;
-}
-  
-.sidebar a:hover:not(.active) {
-    background-color: #555;
-    color: white;
-}
-  
-div.content {
-    margin: 50px;
-    margin-left: 200px;
-    padding: 1px 16px;
-    height: 1000px;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: var(--pink600);
+  position: fixed;
+  height: 100%;
+  overflow: auto;
 }
 
-.row{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
+.sidebar a {
+  display: block;
+  color: var(--beige);
+  padding: 16px;
+  text-decoration: none;
+}
+
+.sidebar a.active {
+  background-color: var(--green);
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+div.content {
+  margin: 50px;
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 .column {
-    background-color: var(--beige);
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--beige);
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.activity_header, .activity_header h1 {
-    text-align: center;
-    padding: 20px;
+.activity_header,
+.activity_header h1 {
+  text-align: center;
+  padding: 20px;
 }
-.separator{
-    border-top: 1px solid #ccc;
-    margin: 10px 0;
+.separator {
+  border-top: 1px solid #ccc;
+  margin: 10px 0;
 }

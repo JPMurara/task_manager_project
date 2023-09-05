@@ -145,6 +145,26 @@ router.get("/tasks", async (req, res) => {
   }
 });
 
+router.post("/userAdd", (req, res) => {
+  const { activity } = req.body;
+
+  console.log("activity ", activity);
+
+  const sql = `INSERT INTO activities (activity_name) VALUES ($1)`;
+  db.query(sql, [activity])
+    .then((result) => {
+      console.log("result is:", result);
+      res.status(200).json({
+        success: true,
+        message: "Activity inserted into the table",
+      });
+    })
+    .catch((error) => {
+      console.error("database error encountered: ", error);
+      res.status(500).json({ message: "internal server error" });
+    });
+});
+
 router.post("/", async (req, res) => {
   const { activity } = req.body;
 
@@ -158,7 +178,7 @@ router.post("/", async (req, res) => {
   const activityPromise = db
     .query(sql, [activity])
     .then((result) => {
-      console.log(result);
+      console.log("result is:", result);
       return result.rows[0].activity_id;
     })
     .catch((error) => {

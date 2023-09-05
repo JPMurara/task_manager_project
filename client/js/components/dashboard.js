@@ -10,20 +10,35 @@ function renderDashboard() {
   content.classList.add("content");
   content.id = "main_content";
 
-  //ACTIVITIES INPUT TO GET TASKS
+  const formsContainer = document.createElement("div");
+  formsContainer.classList.add("formsContainer");
+
+  //ACTIVITIES INPUT TO GET TASKS - AI ASSIST
   const openai = document.createElement("div");
   openai.classList.add("openai");
   openai.innerHTML = `
-        <form action="" id="formAI">
-            <input type="text" name="message" id="message" placeholder="Enter the kind of activity..">
-            <button type="submit">Send</button>
-        </form>
-        `;
+    <form action="" id="formAI">
+        <input type="text" name="message" id="message" placeholder="Add an activity (AI Assist)..." required>
+        <button type="submit">AI Assist</button>
+    </form>
+    `;
 
-  content.appendChild(openai);
+  // User manually add activity
+  const userAddActivityForm = document.createElement("div");
+  userAddActivityForm.classList.add("userAddActivityForm");
+  userAddActivityForm.innerHTML = `
+    <form action="" id="userActivityForm">
+      <input type="text" name="userActivity" id="userActivity" placeholder="Add your own activity..." required>
+      <button>Add</button>
+    </form>
+    `;
+
+  formsContainer.append(openai, userAddActivityForm);
+  content.append(formsContainer);
   page.replaceChildren(content);
   renderSidebarActivities();
   getActivity();
+  postUserActivity();
 }
 
 function renderActivity(activity_id) {
@@ -61,6 +76,7 @@ function renderActivity(activity_id) {
     const todoColumn = document.createElement("div");
     const todoHeader = document.createElement("h2");
     todoHeader.innerHTML = `To-do <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
+    const btnAddTodo = document.getElementById("btnAddTodo");
     todoColumn.appendChild(todoHeader);
     const todoseparator = document.createElement("div");
     todoseparator.classList.add("separator");
@@ -153,6 +169,7 @@ function renderSidebarActivities() {
   page.append(sidebar);
 }
 
+// post new activities inserted with AI assist
 function getActivity() {
   const form = document.querySelector("form");
 
@@ -173,6 +190,24 @@ function getActivity() {
       }
 
       //Refresh sidebar activities
+      renderSidebarActivities();
+    });
+  });
+}
+
+// post new activities inserted by the user
+function postUserActivity() {
+  const form = document.querySelector("#userActivityForm");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {
+      activity: formData.get("userActivity"),
+    };
+    axios.post("/api/activity/userAdd", data).then((res) => {
+      // render side bar after data insertion
       renderSidebarActivities();
     });
   });
