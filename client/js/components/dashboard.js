@@ -220,10 +220,11 @@ function postUserActivity() {
     axios
       .post("/api/activity/userAdd", data)
       .then((res) => {
-        // render side bar after data insertion
+        // refresh side bar with the new activity
         renderSidebarActivities();
       })
       .catch((error) => {
+        // displays the error in the modal (if activity already exists)
         errorDialog.showModal();
         errorMessage.innerText = error.response.data.message;
         setTimeout(() => {

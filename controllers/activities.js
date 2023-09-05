@@ -148,7 +148,7 @@ router.get("/tasks", async (req, res) => {
 // route to handle new activities inserted by the user without AI assis
 router.post("/userAdd", (req, res) => {
   const { activity } = req.body;
-
+  // checks if activity already exists before inserting
   const sql = `SELECT * FROM activities WHERE activity_name=$1`;
   db.query(sql, [activity]).then((dbRes) => {
     if (dbRes.rows.length > 0) {
