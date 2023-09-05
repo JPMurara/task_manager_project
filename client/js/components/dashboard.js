@@ -10,6 +10,15 @@ function renderDashboard() {
   content.classList.add("content");
   content.id = "main_content";
 
+  // modal to display messages
+  const errorContainer = document.createElement("div");
+  errorContainer.classList.add("errorContainer");
+  errorContainer.innerHTML = `
+    <dialog class="dialog" id="formsContainerDialog">
+      <p class="errorMessage"></p>
+    </dialog>
+  `;
+
   const formsContainer = document.createElement("div");
   formsContainer.classList.add("formsContainer");
 
@@ -34,7 +43,7 @@ function renderDashboard() {
     `;
 
   formsContainer.append(openai, userAddActivityForm);
-  content.append(formsContainer);
+  content.append(formsContainer, errorContainer);
   page.replaceChildren(content);
   renderSidebarActivities();
   getActivity();
@@ -198,7 +207,9 @@ function getActivity() {
 // post new activities inserted by the user
 function postUserActivity() {
   const form = document.querySelector("#userActivityForm");
-
+  const errorDialog = document.querySelector("#formsContainerDialog");
+  const errorMessage = document.querySelector(".errorMessage");
+  const userActivity = document.querySelector("#userActivity");
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -206,10 +217,20 @@ function postUserActivity() {
     const data = {
       activity: formData.get("userActivity"),
     };
-    axios.post("/api/activity/userAdd", data).then((res) => {
-      // render side bar after data insertion
-      renderSidebarActivities();
-    });
+    axios
+      .post("/api/activity/userAdd", data)
+      .then((res) => {
+        // render side bar after data insertion
+        renderSidebarActivities();
+      })
+      .catch((error) => {
+        errorDialog.showModal();
+        errorMessage.innerText = error.response.data.message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "3000");
+        userActivity.value = "";
+      });
   });
 }
 

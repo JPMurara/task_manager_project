@@ -145,24 +145,33 @@ router.get("/tasks", async (req, res) => {
   }
 });
 
+// route to handle new activities inserted by the user without AI assis
 router.post("/userAdd", (req, res) => {
   const { activity } = req.body;
 
-  console.log("activity ", activity);
-
-  const sql = `INSERT INTO activities (activity_name) VALUES ($1)`;
-  db.query(sql, [activity])
-    .then((result) => {
-      console.log("result is:", result);
-      res.status(200).json({
-        success: true,
-        message: "Activity inserted into the table",
+  const sql = `SELECT * FROM activities WHERE activity_name=$1`;
+  db.query(sql, [activity]).then((dbRes) => {
+    if (dbRes.rows.length > 0) {
+      res.status(400).json({
+        success: false,
+        message: "Activity alredy exists. Add a new activity",
       });
-    })
-    .catch((error) => {
-      console.error("database error encountered: ", error);
-      res.status(500).json({ message: "internal server error" });
-    });
+    } else {
+      const sql = `INSERT INTO activities (activity_name) VALUES ($1)`;
+      db.query(sql, [activity])
+        .then((result) => {
+          console.log("result is:", result);
+          res.status(200).json({
+            success: true,
+            message: "Activity inserted into the table",
+          });
+        })
+        .catch((error) => {
+          console.error("database error encountered: ", error);
+          res.status(500).json({ message: "internal server error" });
+        });
+    }
+  });
 });
 
 router.post("/", async (req, res) => {
