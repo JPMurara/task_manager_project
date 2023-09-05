@@ -9,7 +9,8 @@ const expressSession = require("express-session");
 const pgSession = require("connect-pg-simple")(expressSession);
 
 //Connect to database file
-const db = require("./database/db.js");
+// const db = require("./database/db.js");
+const { db, createTables, createDB } = require("./database/db.js");
 
 //CROSS
 const cors = require("cors");
@@ -64,6 +65,13 @@ app.use((err, req, res, next) => {
 });
 
 //Run on port 3000
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`App running on http://localhost:${port}`);
+
+  try {
+    // create the tables from schema.sql
+    await createTables();
+  } catch (err) {
+    console.error("Error initializing database tables:", err);
+  }
 });

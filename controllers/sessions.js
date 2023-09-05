@@ -1,7 +1,7 @@
 //Start express
 const express = require("express");
 //Connect with database
-const db = require("../database/db.js");
+const { db } = require("../database/db.js");
 //bcrypt for encrypt password
 const bcrypt = require("bcrypt");
 //Create router for easy access
@@ -58,7 +58,6 @@ router.post("/", (req, res) => {
 
 //GET SESSION NAME FOR FRONT-END ex. "Logged in as Bruno"
 router.get("/status", (req, res) => {
-  console.log("req session", req.session);
   if (!req.session.sessionUser || !req.session.sessionUser.isAuthenticated) {
     return res.status(200).json({ message: "Not logged in" });
   }
