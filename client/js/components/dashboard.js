@@ -67,9 +67,9 @@ function renderActivity(activity_id) {
   }
 
   axios.get("/api/activity/get/" + activity_id).then((res) => {
-    console.log(res);
+    // console.log(res);
 
-    // create a header for the activity
+    // create a header for the activity (activity name)
     const activity_header = document.createElement("div");
     activity_header.classList.add("activity_header");
     const activity_title = document.createElement("h1");
@@ -85,7 +85,7 @@ function renderActivity(activity_id) {
     const todoColumn = document.createElement("div");
     const todoHeader = document.createElement("h2");
     todoHeader.innerHTML = `To-do <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
-    const btnAddTodo = document.getElementById("btnAddTodo");
+    // const btnAddTodo = document.getElementById("btnAddTodo");
     todoColumn.appendChild(todoHeader);
     const todoseparator = document.createElement("div");
     todoseparator.classList.add("separator");
@@ -95,19 +95,6 @@ function renderActivity(activity_id) {
     todoList.classList.add("startList");
     todoColumn.appendChild(todoList);
 
-    //Render list for tasks
-    res.data.tasks.forEach((task) => {
-      const list = document.createElement("li");
-
-      list.innerHTML = `${
-        task.task_name
-      } <a href="#" onclick='editTask(${JSON.stringify(
-        task
-      )})'><i class="fa-solid fa-pen-to-square iconEdit"></i></a>`;
-      // Append the new task to the container
-      todoList.appendChild(list);
-    });
-
     //create doing column
     const doingColumn = document.createElement("div");
     const doingHeader = document.createElement("h2");
@@ -116,7 +103,10 @@ function renderActivity(activity_id) {
     const doingseparator = document.createElement("div");
     doingseparator.classList.add("separator");
     doingColumn.appendChild(doingseparator);
+    const doingList = document.createElement("ul");
+    doingList.classList.add("doingList");
     doingColumn.classList.add("column");
+    doingColumn.appendChild(doingList);
 
     //create done column
     const doneColumn = document.createElement("div");
@@ -126,36 +116,36 @@ function renderActivity(activity_id) {
     const doneseparator = document.createElement("div");
     doneseparator.classList.add("separator");
     doneColumn.appendChild(doneseparator);
+    const doneList = document.createElement("ul");
+    doneList.classList.add("doneList");
     doneColumn.classList.add("column");
+    doneColumn.appendChild(doneList);
+
+    //Render list for tasks
+    res.data.tasks.forEach((task) => {
+      console.log("task status:::", task);
+      const list = document.createElement("li");
+      list.innerHTML = `${
+        task.task_name
+      } <a href="#" onclick='editTask(${JSON.stringify(
+        task
+      )})'><i class="fa-solid fa-pen-to-square iconEdit"></i></a>`;
+      // Append the new task to the container according to their status
+      if (task.tasks_status === "pending") {
+        todoList.appendChild(list);
+      }
+      if (task.tasks_status === "in_progress") {
+        doingList.appendChild(list);
+      }
+      if (task.tasks_status === "completed") {
+        doneList.appendChild(list);
+      }
+    });
 
     row.append(todoColumn, doingColumn, doneColumn);
 
     content.append(row);
   });
-
-  //create doing column
-  const doingColumn = document.createElement("div");
-  const doingHeader = document.createElement("h2");
-  doingHeader.innerHTML = `Doing <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
-  doingColumn.appendChild(doingHeader);
-  const doingseparator = document.createElement("div");
-  doingseparator.classList.add("separator");
-  doingColumn.appendChild(doingseparator);
-  doingColumn.classList.add("column");
-
-  //create done column
-  const doneColumn = document.createElement("div");
-  const doneHeader = document.createElement("h2");
-  doneHeader.innerHTML = `Done <a href="/"><i class="fas fa-plus-circle" style="float: right;"></i></a>`;
-  doneColumn.appendChild(doneHeader);
-  const doneseparator = document.createElement("div");
-  doneseparator.classList.add("separator");
-  doneColumn.appendChild(doneseparator);
-  doneColumn.classList.add("column");
-
-  row.append(todoColumn, doingColumn, doneColumn);
-
-  content.append(row);
 }
 
 function renderSidebarActivities() {
@@ -168,14 +158,32 @@ function renderSidebarActivities() {
   axios.get("/api/activity/getAll").then((res) => {
     let activitiesAnchors = ``;
     res.data.forEach((activity) => {
-      //Declared the renderActivity() as global scope on the bottom of the page
-
-      activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>`;
+      //Declared the renderActivity() and deleteActivity() as global scope on the bottom of the page
+      activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}<i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i></a>`;
     });
 
     sidebar.innerHTML = activitiesAnchors;
   });
   page.append(sidebar);
+}
+
+// delete an activity
+function deleteActivity(activity_id) {
+  const errorDialog = document.querySelector("#formsContainerDialog");
+  const errorMessage = document.querySelector(".errorMessage");
+  axios
+    .delete(`/delete/${activity_id}`)
+    .then((res) => {
+      renderSidebarActivities();
+    })
+    .catch((error) => {
+      // displays the error in the modal
+      errorDialog.showModal();
+      errorMessage.innerText = error.response.data.message;
+      setTimeout(() => {
+        errorDialog.close();
+      }, "3000");
+    });
 }
 
 // post new activities inserted with AI assist
@@ -362,6 +370,7 @@ function editTask(task) {
 }
 
 window.renderActivity = renderActivity;
+window.deleteActivity = deleteActivity;
 window.editTask = editTask;
 
 export default renderDashboard;

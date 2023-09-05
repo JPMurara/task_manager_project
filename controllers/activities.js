@@ -226,11 +226,12 @@ router.post("/", async (req, res) => {
 
     //SQL query to insert user into the database
     const tasksSql = `
-            INSERT INTO tasks (activity_id, task_name)
-            VALUES ($1,$2), ($1,$3), ($1,$4), ($1,$5), ($1,$6)
+            INSERT INTO tasks (activity_id, task_name, tasks_status)
+            VALUES ($1,$2,'pending'), ($1,$3,'pending'), ($1,$4,'pending'), ($1,$5,'pending'), ($1,$6,'pending')
             RETURNING task_name;
         `;
     const activity_id = await activityPromise;
+    console.log("activity id:", activity_id);
 
     db.query(tasksSql, [activity_id].concat(data)).then(() => {
       res.status(200).json({
