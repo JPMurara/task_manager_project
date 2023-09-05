@@ -201,7 +201,7 @@ router.post("/", async (req, res) => {
       {
         role: "system",
         content:
-          "Help generate a to-do list. Please provide 5 tasks. Each task should be 1-4 words and start with a capital letter. Your response will be outputted in JSON format.",
+          "Help generate a to-do list. Provide exactly 5 tasks always. Each task should be 1-4 words and start with a capital letter. Your must be outputted in JSON format. Your answer must be in this format: tasks: [task1, task2, task3, task4, task5]. Each of the task has to be a string",
       },
       {
         role: "user",
@@ -450,30 +450,40 @@ router.put("/task/update/:task_id", (req, res) => {
 });
 
 //route to delete activity
-router.delete("/delete/:activty_id", (req, res) => {
+router.delete("/delete/:activity_id", (req, res) => {
   //activity_id initializing
-  const activty_id = req.params.activty_id;
-
-  //SQL query to delete the activity from database
+  const activity_id = req.params.activity_id;
+  // activity_id is a foreign key in the tasks table, so we delete the tasks first and after that the activity
   const sql = `
-          DELETE FROM activties
-          WHERE activity_id = $1`;
-
-  //ERROR HANDLING: checking if activty_id was provided
-  if (!activty_id || activty_id == 0)
+  DELETE FROM tasks where activity_id=$1
+  `;
+  //ERROR HANDLING: checking if activity_id was provided
+  if (!activity_id || activity_id == 0)
     return res.status(400).json({
+      success: false,
       message: "Failed to locate Activity!",
     });
-
-  //Query the database with sql and values
-  db.query(sql, [activty_id])
-    .then(() => {
-      res.status(200).json({ message: "Actvity deleted successfully" });
-    })
-    .catch((err) => {
-      console.error("database error encountered: ", err);
-      res.status(500).json({ message: err });
-    });
+  db.query(sql, [activity_id]).then(() => {
+    //SQL query to delete the activity from database
+    const sql = `
+    DELETE FROM activities
+    WHERE activity_id = $1`;
+    //Query the database with sql and values
+    db.query(sql, [activity_id])
+      .then(() => {
+        res.status(200).json({
+          success: true,
+          message: "Actvity deleted successfully",
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          success: false,
+          message: "Error",
+          err,
+        });
+      });
+  });
 });
 
 //route to delete task
