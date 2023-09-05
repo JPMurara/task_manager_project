@@ -58,21 +58,29 @@ button:hover {
   overflow: auto;
 }
 
-.sidebar a {
+.sidebar a,
+i {
   display: block;
   color: var(--beige);
   padding: 16px;
   text-decoration: none;
 }
 
-.sidebar a.active {
+/* .sidebar a.active,
+i.active {
   background-color: var(--green);
   color: white;
+} */
+
+.sidebar a:hover:not(.active),
+i:hover:not(.active) {
+  color: var(--green600);
+  cursor: pointer;
 }
 
-.sidebar a:hover:not(.active) {
-  background-color: #555;
-  color: white;
+.activityContainer {
+  display: flex;
+  align-items: center;
 }
 
 div.content {
