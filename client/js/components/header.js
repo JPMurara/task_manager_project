@@ -1,6 +1,7 @@
 import renderAuthForms from "./authForms.js";
 import renderLogout from "./logout.js";
 import renderDashboard from "./dashboard.js";
+import renderTeams from "./myteams.js";
 
 export function renderHeader() {
   const header = document.getElementById("header-nav");
@@ -62,7 +63,7 @@ export function loginStatus() {
       header.replaceChildren(navUl);
 
       // Add event listeners to menu items
-      // teams.addEventListener("click", renderTeams);
+      teams.addEventListener("click", renderTeams);
       activities.addEventListener("click", renderDashboard);
 
       const logoutLi = document.querySelector("#logout");
