@@ -464,7 +464,7 @@ router.delete("/delete/:activity_id", (req, res) => {
       message: "Failed to locate Activity!",
     });
   db.query(sql, [activity_id]).then(() => {
-    //SQL query to delete the activity from database
+    //SQL query to delete the activity from DB
     const sql = `
     DELETE FROM activities
     WHERE activity_id = $1`;
