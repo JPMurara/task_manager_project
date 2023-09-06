@@ -9,7 +9,9 @@ function renderDashboard() {
   const content = document.createElement("div");
   content.classList.add("content");
   content.id = "main_content";
-
+  
+  const activityContainer = document.createElement("div")
+  activityContainer.id = "activityCont"
   // modal to display messages
   const errorContainer = document.createElement("div");
   errorContainer.classList.add("errorContainer");
@@ -43,146 +45,152 @@ function renderDashboard() {
     `;
 
   formsContainer.append(openai, userAddActivityForm);
-  content.append(formsContainer, errorContainer);
+  content.append(formsContainer, errorContainer, activityContainer);
   page.replaceChildren(content);
   renderSidebarActivities();
   getActivity();
   postUserActivity();
 }
 
-function renderActivity(activity_id) {
-  const content = document.getElementById("main_content");
+function renderActivity(activity_id){
+  console.log(activity_id);
+  const content = document.getElementById("activityCont");
+  content.innerHTML = ``; 
+  axios.get("/api/activity/get/" + activity_id)
+    .then((res) => {
+      if(res.data != null){
+        // Create a div with class "action-panel"
+        const actionPanelDiv = document.createElement("div");
+        actionPanelDiv.classList.add("action-panel");
 
-  //Clear the old content, to only show the new one
-  // Remove the existing activity_header, if any
-  const existingHeader = document.querySelector(".activity_header");
-  if (existingHeader) {
-    content.removeChild(existingHeader);
-  }
+        // Create an h2 element with content
+        const h2Element = document.createElement("h2");
+        h2Element.textContent = res.data.activity_name ?? "-";
 
-  // Remove the existing task rows, if any
-  const existingRow = document.querySelector(".row");
-  if (existingRow) {
-    content.removeChild(existingRow);
-  }
+        // Create three buttons with icons
+        const addButton = document.createElement("button");
+        addButton.id = "add-button";
+        const addIcon = document.createElement("i");
+        addIcon.classList.add("fa-solid", "fa-user-plus");
+        addButton.appendChild(addIcon);
 
-  axios.get("/api/activity/get/" + activity_id).then((res) => {
-    // create a header for the activity (activity name)
-    const activity_header = document.createElement("div");
-    activity_header.classList.add("activity_header");
-    const activity_title = document.createElement("h1");
-    activity_title.textContent = res.data.activity_name;
-    activity_header.append(activity_title);
-    content.appendChild(activity_header);
+        const deleteButton = document.createElement("button");
+        deleteButton.id = "delete-button";
+        const deleteIcon = document.createElement("i");
+        deleteIcon.classList.add("fa-solid", "fa-trash-can");
+        deleteButton.appendChild(deleteIcon);
+        deleteButton.addEventListener("click", () =>{deleteActivity(res.data.activity_id)})
 
-    //create row
-    const row = document.createElement("row");
-    row.classList.add("row");
+        const updateButton = document.createElement("button");
+        updateButton.id = "update-button";
+        const updateIcon = document.createElement("i");
+        updateIcon.classList.add("fa-solid", "fa-pen-to-square");
+        updateButton.appendChild(updateIcon);
 
-    // Test this code and remove the old one after testing!
-    // Create an array of task status to create columns inside the loop
-    const columnNames = ["To-do", "Doing", "Done"];
-    // Iterate through the column names and create the columns
-    columnNames.forEach((columnName) => {
-      const column = document.createElement("div");
-      const header = document.createElement("h2");
-      const icon = document.createElement("i");
-      icon.setAttribute("class", "btnAddTask fas fa-plus-circle");
-      icon.style.float = "right";
-      //   header.innerHTML = `${columnName} <i class="fas fa-plus-circle" style="float: right;"></i>`;
-      header.innerHTML = `${columnName}`;
-      header.append(icon);
-      column.appendChild(header);
-      const separator = document.createElement("div");
-      separator.classList.add("separator");
-      column.appendChild(separator);
-      column.classList.add("column");
-      const list = document.createElement("ul");
-      list.classList.add(`${columnName.toLowerCase()}List`);
-      column.appendChild(list);
-      row.appendChild(column);
-      icon.addEventListener("click", () => addTask(activity_id));
+        // Append the elements to the actionPanelDiv
+        actionPanelDiv.appendChild(h2Element);
+        actionPanelDiv.appendChild(addButton);
+        actionPanelDiv.appendChild(deleteButton);
+        actionPanelDiv.appendChild(updateButton);
+
+        content.appendChild(actionPanelDiv);
+
+        //create row
+        const row = document.createElement("row");
+        row.classList.add("row");
+
+        // Test this code and remove the old one after testing!
+        // Create an array of task status to create columns inside the loop
+        const columnNames = ["To-do", "Doing", "Done"];
+        // Iterate through the column names and create the columns
+        columnNames.forEach((columnName) => {
+          const column = document.createElement("div");
+          const header = document.createElement("h2");
+          const icon = document.createElement("i");
+          icon.setAttribute("class", "btnAddTask fas fa-plus-circle");
+          icon.style.float = "right";
+          //   header.innerHTML = `${columnName} <i class="fas fa-plus-circle" style="float: right;"></i>`;
+          header.innerHTML = `${columnName}`;
+          header.append(icon);
+          column.appendChild(header);
+          const separator = document.createElement("div");
+          separator.classList.add("separator");
+          column.appendChild(separator);
+          column.classList.add("column");
+          const list = document.createElement("ul");
+          list.classList.add("tasklistContainer");
+          list.classList.add(`${columnName.toLowerCase()}List`);
+          column.appendChild(list);
+          row.appendChild(column);
+          icon.addEventListener("click", () => addTask(activity_id));
+        });
+        
+        content.append(row);
+
+        //Render list for tasks
+        const todoList = document.querySelector(".to-doList");
+        const doingList = document.querySelector(".doingList");
+        const doneList = document.querySelector(".doneList");
+
+        res.data.tasks.forEach((task) => {
+          // Create <li> element
+          const listItem = document.createElement("li");
+          listItem.classList.add("member-item");
+      
+          // Create <span> element for task name
+          const taskName = document.createElement("span");
+          taskName.classList.add("member-name");
+          taskName.textContent = task.task_name;
+      
+          // Create <button> element for remove
+          const editButton = document.createElement("button");
+          editButton.classList.add("edit-button");
+      
+          // Create <i> element for edit icon
+          const editTaskIcon = document.createElement("i");
+          editTaskIcon.classList.add("fa-solid", "fa-pen-to-square");
+      
+          // Append the trash icon to the remove button
+          editButton.appendChild(editTaskIcon);
+          
+          editButton.addEventListener("click", () => {
+            editTask(task, activity_id);
+          })
+
+          // Create <button> element for remove
+          const deleteTaskButton = document.createElement("button");
+          deleteTaskButton.classList.add("remove-button");
+      
+          // Create <i> element for edit icon
+          const deleteTaskIcon = document.createElement("i");
+          deleteTaskIcon.classList.add("fa-solid", "fa-trash-can");
+      
+          // Append the trash icon to the remove button
+          deleteTaskButton.appendChild(deleteTaskIcon);
+          
+          deleteTaskButton.addEventListener("click", () => {
+            deleteTask(task.task_id, activity_id);
+          })
+
+          // Append the member name and remove button to the list item
+          listItem.appendChild(taskName);
+          listItem.appendChild(editButton);
+          listItem.appendChild(deleteTaskButton);
+      
+          // Append the list item to the appropriate list based on task status
+          if (task.tasks_status === "pending") {
+              todoList.appendChild(listItem);
+          } else if (task.tasks_status === "in_progress") {
+              doingList.appendChild(listItem);
+          } else if (task.tasks_status === "completed") {
+              doneList.appendChild(listItem);
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
     });
-    content.append(row);
-
-    // test the loop above and delete the below code later
-    // //create to-do column
-    // const todoColumn = document.createElement("div");
-    // const todoHeader = document.createElement("h2");
-    // // todoHeader.innerHTML = `To-do <i onclick="addTask(${activity_id})" class="fas fa-plus-circle" style="float: right;"></i>`;
-    // todoHeader.innerHTML = `To-do <i class="btnAddTask fas fa-plus-circle" style="float: right;"></i>`;
-    // todoColumn.appendChild(todoHeader);
-    // const todoseparator = document.createElement("div");
-    // todoseparator.classList.add("separator");
-    // todoColumn.appendChild(todoseparator);
-    // todoColumn.classList.add("column");
-    // const todoList = document.createElement("ul");
-    // todoList.classList.add("startList");
-    // todoColumn.appendChild(todoList);
-
-    // //create doing column
-    // const doingColumn = document.createElement("div");
-    // const doingHeader = document.createElement("h2");
-    // doingHeader.innerHTML = `Doing <i class="btnAddTask fas fa-plus-circle" style="float: right;"></i>`;
-    // doingColumn.appendChild(doingHeader);
-    // const doingseparator = document.createElement("div");
-    // doingseparator.classList.add("separator");
-    // doingColumn.appendChild(doingseparator);
-    // doingColumn.classList.add("column");
-    // const doingList = document.createElement("ul");
-    // doingList.classList.add("doingList");
-    // doingColumn.appendChild(doingList);
-
-    // //create done column
-    // const doneColumn = document.createElement("div");
-    // const doneHeader = document.createElement("h2");
-    // doneHeader.innerHTML = `Done <i class="btnAddTask fas fa-plus-circle" style="float: right;"></i>`;
-    // doneColumn.appendChild(doneHeader);
-    // const doneseparator = document.createElement("div");
-    // doneseparator.classList.add("separator");
-    // doneColumn.appendChild(doneseparator);
-    // doneColumn.classList.add("column");
-    // const doneList = document.createElement("ul");
-    // doneList.classList.add("doneList");
-    // doneColumn.appendChild(doneList);
-
-    //Render list for tasks
-    const todoList = document.querySelector(".to-doList");
-    const doingList = document.querySelector(".doingList");
-    const doneList = document.querySelector(".doneList");
-
-    res.data.tasks.forEach((task) => {
-      const list = document.createElement("li");
-      list.innerHTML = `${
-        task.task_name
-      } <a href="#" onclick='editTask(${JSON.stringify(
-        task
-      )})'><i class="fa-solid fa-pen-to-square iconEdit"></i></a>`;
-      // Append the new task to the container according to their status
-      if (task.tasks_status === "pending") {
-        todoList.appendChild(list);
-      }
-      if (task.tasks_status === "in_progress") {
-        doingList.appendChild(list);
-      }
-      if (task.tasks_status === "completed") {
-        doneList.appendChild(list);
-      }
-    });
-
-    // old code before using loop
-    // row.append(todoColumn, doingColumn, doneColumn);
-
-    // content.append(row);
-
-    // old way of adding event listener. delete if loop is working
-    //     const allBtnsAddTask = document.querySelectorAll(".btnAddTask");
-    //     allBtnsAddTask.forEach((el) => {
-    //       // Set the activity_id as a data attribute
-    //       el.dataset.activityId = activity_id;
-    //       el.addEventListener("click", addTask);
-    //     });
-  });
 }
 
 function addTask(activity_id) {
@@ -215,10 +223,10 @@ function addTask(activity_id) {
         </select>
 
         <label for="add_assigned_to">Assigned To:</label>
-        <input type="text" id="add_assigned_to" name="assigned_to">
+        <input type="number" id="add_assigned_to" name="assigned_to">
 
         <label for="add_due_date">Due Date:</label>
-        <input type="date" id="add_due_date" name="due_date">
+        <input type="date" id="add_due_date" name="due_date" value="0001-01-01">
 
         <input type="submit" id="saveAddTask" value="Save">
     `;
@@ -253,8 +261,8 @@ function addTask(activity_id) {
       task_description: document.getElementById("add_task_description").value,
       tasks_status: document.getElementById("add_task_status").value,
       task_priority: document.getElementById("add_task_priority").value,
-      assigned_to: document.getElementById("add_assigned_to").value,
-      due_date: document.getElementById("add_due_date").value,
+      assigned_to: parseInt(document.getElementById("add_assigned_to").value),
+      due_date: new Date(document.getElementById("add_due_date").value),
       updated_at: new Date().toISOString().slice(0, 19).replace("T", " "), // Format: 'YYYY-MM-DD HH:MM:SS'
     };
     axios
@@ -262,6 +270,7 @@ function addTask(activity_id) {
       .then((res) => {
         dialog.close();
         console.log(res.data);
+        document.body.removeChild(dialog);
         renderActivity(activity_id);
       })
       .catch((error) => {
@@ -283,7 +292,6 @@ function renderSidebarActivities() {
       activityContainer.classList.add("activityContainer");
       activityContainer.innerHTML = `
       <a href="" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
-      <i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i>
       `;
       sidebar.appendChild(activityContainer);
     });
@@ -305,6 +313,23 @@ function deleteActivity(activity_id) {
       // removes information about the deleted activity from the dashboard view
       mainContent.removeChild(row);
       mainContent.removeChild(activityHeader);
+    })
+    .catch((error) => {
+      // displays the error in the modal
+      errorDialog.showModal();
+      errorMessage.innerText = error.response.data.message;
+      setTimeout(() => {
+        errorDialog.close();
+      }, "3000");
+    });
+}
+
+// delete an task
+function deleteTask(task_id, activity_id) {
+  axios
+    .delete("/api/activity/task/delete/" + task_id)
+    .then((res) => {
+      renderActivity(activity_id)
     })
     .catch((error) => {
       // displays the error in the modal
@@ -396,7 +421,7 @@ function renderLastActivity() {
     });
 }
 
-function editTask(task) {
+function editTask(task, activity_id) {
   console.log(task.task_id);
   // Create elements
   const dialog = document.createElement("dialog");
@@ -441,13 +466,13 @@ function editTask(task) {
         </select>
 
         <label for="edit_assigned_to">Assigned To:</label>
-        <input type="text" id="edit_assigned_to" name="assigned_to" value="${
+        <input type="number" id="edit_assigned_to" name="assigned_to" value="${
           task.assigned_to || ""
         }">
 
         <label for="edit_due_date">Due Date:</label>
         <input type="date" id="edit_due_date" name="due_date" value="${
-          task.due_date || ""
+          task.due_date || "0001-01-01"
         }">
 
         <input type="submit" id="saveEditTask" value="Save">
@@ -484,8 +509,8 @@ function editTask(task) {
       task_description: document.getElementById("edit_task_description").value,
       tasks_status: document.getElementById("edit_task_status").value,
       task_priority: document.getElementById("edit_task_priority").value,
-      assigned_to: document.getElementById("edit_assigned_to").value,
-      due_date: document.getElementById("edit_due_date").value,
+      assigned_to: parseInt(document.getElementById("edit_assigned_to").value),
+      due_date: new Date(document.getElementById("edit_due_date").value),
       updated_at: new Date().toISOString().slice(0, 19).replace("T", " "), // Format: 'YYYY-MM-DD HH:MM:SS'
     };
 
@@ -494,6 +519,8 @@ function editTask(task) {
       .then((response) => {
         dialog.close();
         console.log(response.data);
+        document.body.removeChild(dialog);
+        renderActivity(activity_id);
       })
       .catch((error) => {
         console.error(error);
