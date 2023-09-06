@@ -187,7 +187,6 @@ router.post("/", async (req, res) => {
     const activityPromise = db
         .query(sql, [activity])
         .then((result) => {
-            console.log("result is:", result);
             return result.rows[0].activity_id;
         })
         .catch((error) => {
@@ -201,18 +200,24 @@ router.post("/", async (req, res) => {
             {
                 role: "system",
                 content:
-                    "Help generate a to-do list. Please provide 5 tasks. Each task should be 1-4 words and start with a capital letter. Your response will be outputted in JSON format.",
+                    "You're an assistant that helps generate specific to-do lists. When given a category or theme, provide a concise list of five related tasks or items. Each task should be 1-4 words and start with a capital letter. Format the response as a JSON object with a tasks key, containing an array of tasks. For example: {tasks: ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5']}.",
             },
             {
                 role: "user",
-                content: activity,
+                content: `Generate tasks related to the activity but don't just restate the activity: "${activity}"`,
+            },
+            {
+                role: "assistant",
+                content:
+                    "{tasks: ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5']}",
             },
         ];
 
         let attempts = 0; // Initialize an attempt counter
         const MAX_ATTEMPTS = 3; // Maximum times you want to try fetching from the API
-
+        let JSONContent;
         let data;
+
         do {
             const completion = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
@@ -220,16 +225,18 @@ router.post("/", async (req, res) => {
             });
             console.log("completion", completion);
 
-            const tasksAI = JSON.parse(completion.choices[0].message.content);
+            console.log(completion.choices[0].message.content);
 
-            console.log("tasksAI: ", tasksAI);
+            JSONContent = JSON.parse(completion.choices[0].message.content);
 
-            const data = tasksAI.tasks;
+            console.log("JSONContent: ", JSONContent);
+
+            data = JSONContent.tasks;
 
             console.log("data: ", data);
 
             attempts++;
-        } while (!isValidTasksList(data) && attempts < MAX_ATTEMPTS);
+        } while (!isValidTasksList(JSONContent) && attempts < MAX_ATTEMPTS);
 
         //SQL query to insert user into the database
         const tasksSql = `
@@ -256,12 +263,19 @@ router.post("/", async (req, res) => {
     }
 });
 
-//TESTING
-//test
+function isValidTasksList(data) {
+    console.log(data);
+    // Check if 'tasks' key exists and is an array
+    if (!data.hasOwnProperty("tasks") || !Array.isArray(data.tasks)) {
+        return false;
+    }
 
-function isValidTasksList(tasks) {
+    const tasks = data.tasks;
+
     // Check if there are exactly 5 tasks
-    if (tasks.length !== 5) return false;
+    if (tasks.length !== 5) {
+        return false;
+    }
 
     // Check if each task meets the criteria
     for (const task of tasks) {
@@ -269,7 +283,7 @@ function isValidTasksList(tasks) {
             // Check if task starts with a capital letter
             task.charAt(0) !== task.charAt(0).toUpperCase() ||
             // Check if task length is between 1 and 4 words
-            task.split(",").length > 4
+            task.split(" ").length > 4
         ) {
             return false;
         }
