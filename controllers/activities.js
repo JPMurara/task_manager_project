@@ -437,11 +437,13 @@ router.put("/task/update/:task_id", (req, res) => {
     //task_id initializing
     const task_id = req.params.task_id;
 
+    console.log(req.body);
+
     //Deconstruct the form
     const {
         task_name,
         task_description,
-        task_status,
+        tasks_status,
         task_priority,
         assigned_to,
         due_date,
@@ -479,7 +481,7 @@ router.put("/task/update/:task_id", (req, res) => {
     db.query(sql, [
         task_name,
         task_description,
-        task_status,
+        tasks_status,
         task_priority,
         assigned_to,
         due_date,
@@ -531,7 +533,6 @@ router.delete("/delete/:activity_id", (req, res) => {
       });
   });
 });
-
 
 //route to delete task
 router.delete("/task/delete/:task_id", (req, res) => {
