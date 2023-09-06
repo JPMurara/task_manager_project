@@ -10,6 +10,23 @@ const bcrypt = require("bcrypt");
 //Create router for easy access
 const router = express.Router();
 
+// Define a function to get all users
+router.get("/getAll", (req, res) => {
+  // SQL query to select all users
+  const sql = 'SELECT user_id, name, email FROM users';
+
+  // Query the database
+  db.query(sql)
+    .then(users => {
+      // Send the users as a JSON response
+      res.status(200).json(users.rows);
+    })
+    .catch(error => {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ error: 'An error occurred while fetching users.' });
+    });
+});
+
 // handler for register new user
 router.post("/signup", (req, res) => {
   //Deconstruct the form
