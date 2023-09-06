@@ -124,7 +124,7 @@ function renderActivity(activity_id) {
             const list = document.createElement("li");
             list.innerHTML = `${
                 task.task_name
-            } <a href="#" onclick='editTask(${JSON.stringify(
+            }  <a href="" onclick='editTask(${JSON.stringify(
                 task
             )})'><i class="fa-solid fa-pen-to-square iconEdit"></i></a>`;
             // Append the new task to the container according to their status
@@ -157,8 +157,8 @@ function renderSidebarActivities() {
             const activityContainer = document.createElement("div");
             activityContainer.classList.add("activityContainer");
             activityContainer.innerHTML = `
-      <a href="" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
-      <i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i>
+      <a href="/" onclick='event.preventDefault(); renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
+      <i onclick="event.preventDefault(); deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i>
       `;
             sidebar.appendChild(activityContainer);
         });
@@ -205,7 +205,6 @@ function getActivity() {
 
         //POST ACTIVITY NAME
         axios.post("/api/activity", data).then((res) => {
-            console.log(res.data);
             //Render the new tasks on dashboard after posting it
             if (res.data && res.data.activity_id) {
                 renderActivity(res.data.activity_id);
@@ -347,12 +346,13 @@ function editTask(task) {
     // Close the dialog box when the button close is clicked
     closeBtn.addEventListener("click", function () {
         dialog.close();
-        document.body.removeChild(dialog); // Optional: remove dialog from DOM after closing
     });
 
     //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
 
     document.getElementById("saveEditTask").addEventListener("click", (e) => {
+        console.log("Form submitted"); // This should log every time the form is submitted
+
         e.preventDefault();
         const taskData = {
             task_name: document.getElementById("edit_task_name").value,
@@ -368,8 +368,10 @@ function editTask(task) {
         axios
             .put("/api/activity/task/update/" + task.task_id, taskData)
             .then((response) => {
+                console.log(response.data.activity_id);
                 dialog.close();
-                console.log(response.data);
+                // refresh the dashboard
+                renderActivity(response.data.activity_id);
             })
             .catch((error) => {
                 console.error(error);
@@ -382,4 +384,3 @@ window.deleteActivity = deleteActivity;
 window.editTask = editTask;
 
 export default renderDashboard;
-//TESTING GIT
