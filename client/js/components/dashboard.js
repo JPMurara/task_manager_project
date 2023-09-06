@@ -272,6 +272,7 @@ function renderLastActivity() {
 }
 
 function editTask(task) {
+    console.log(task.task_id);
     // Create elements
     const dialog = document.createElement("dialog");
 
@@ -351,12 +352,13 @@ function editTask(task) {
 
     //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
 
-    document.getElementById("saveEditTask").addEventListener("click", () => {
+    document.getElementById("saveEditTask").addEventListener("click", (e) => {
+        e.preventDefault();
         const taskData = {
             task_name: document.getElementById("edit_task_name").value,
             task_description: document.getElementById("edit_task_description")
                 .value,
-            task_status: document.getElementById("edit_task_status").value,
+            tasks_status: document.getElementById("edit_task_status").value,
             task_priority: document.getElementById("edit_task_priority").value,
             assigned_to: document.getElementById("edit_assigned_to").value,
             due_date: document.getElementById("edit_due_date").value,
@@ -364,7 +366,7 @@ function editTask(task) {
         };
 
         axios
-            .put("/api/activities/task/update/" + task.task_id, taskData)
+            .put("/api/activity/task/update/" + task.task_id, taskData)
             .then((response) => {
                 dialog.close();
                 console.log(response.data);

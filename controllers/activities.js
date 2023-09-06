@@ -437,11 +437,13 @@ router.put("/task/update/:task_id", (req, res) => {
     //task_id initializing
     const task_id = req.params.task_id;
 
+    console.log(req.body);
+
     //Deconstruct the form
     const {
         task_name,
         task_description,
-        task_status,
+        tasks_status,
         task_priority,
         assigned_to,
         due_date,
@@ -479,7 +481,7 @@ router.put("/task/update/:task_id", (req, res) => {
     db.query(sql, [
         task_name,
         task_description,
-        task_status,
+        tasks_status,
         task_priority,
         assigned_to,
         due_date,
@@ -502,7 +504,7 @@ router.delete("/delete/:activty_id", (req, res) => {
 
     //SQL query to delete the activity from database
     const sql = `
-          DELETE FROM activties
+          DELETE FROM activities
           WHERE activity_id = $1`;
 
     //ERROR HANDLING: checking if activty_id was provided
