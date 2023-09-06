@@ -123,7 +123,6 @@ function renderActivity(activity_id) {
 
     //Render list for tasks
     res.data.tasks.forEach((task) => {
-      console.log("task status:::", task);
       const list = document.createElement("li");
       list.innerHTML = `${
         task.task_name
@@ -150,31 +149,39 @@ function renderActivity(activity_id) {
 
 function renderSidebarActivities() {
   const page = document.getElementById("page");
-
   const sidebar = document.createElement("div");
   sidebar.classList.add("sidebar");
-
-  //Get activities from DB and render here
+  sidebar.innerHTML = " ";
+  //Get all activities from DB and render here
   axios.get("/api/activity/getAll").then((res) => {
-    let activitiesAnchors = ``;
     res.data.forEach((activity) => {
       //Declared the renderActivity() and deleteActivity() as global scope on the bottom of the page
-      activitiesAnchors += `<a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}<i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i></a>`;
+      const activityContainer = document.createElement("div");
+      activityContainer.classList.add("activityContainer");
+      activityContainer.innerHTML = `
+      <a href="" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
+      <i onclick="deleteActivity(${activity.activity_id})" class="fas fa-regular fa-trash" style="float: right;"></i>
+      `;
+      sidebar.appendChild(activityContainer);
     });
-
-    sidebar.innerHTML = activitiesAnchors;
+    page.append(sidebar);
   });
-  page.append(sidebar);
 }
 
 // delete an activity
 function deleteActivity(activity_id) {
   const errorDialog = document.querySelector("#formsContainerDialog");
   const errorMessage = document.querySelector(".errorMessage");
+  const mainContent = document.querySelector("#main_content");
+  const activityHeader = document.querySelector(".activity_header");
+  const row = document.querySelector(".row");
   axios
-    .delete(`/delete/${activity_id}`)
+    .delete("/api/activity/delete/" + activity_id)
     .then((res) => {
-      renderSidebarActivities();
+      renderDashboard();
+      // removes information about the deleted activity from the dashboard view
+      mainContent.removeChild(row);
+      mainContent.removeChild(activityHeader);
     })
     .catch((error) => {
       // displays the error in the modal
@@ -228,8 +235,8 @@ function postUserActivity() {
     axios
       .post("/api/activity/userAdd", data)
       .then((res) => {
-        // refresh side bar with the new activity
-        renderSidebarActivities();
+        // refresh the dashboard
+        renderDashboard();
       })
       .catch((error) => {
         // displays the error in the modal (if activity already exists)
