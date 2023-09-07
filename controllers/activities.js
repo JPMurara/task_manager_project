@@ -434,16 +434,22 @@ router.put("/task/update/:task_id", (req, res) => {
 
   console.log(req.body);
 
-  //Deconstruct the form
-  const {
-    task_name,
-    task_description,
-    tasks_status,
-    task_priority,
-    assigned_to,
-    due_date,
-    updated_at,
-  } = req.body;
+
+    //Deconstruct the form
+    let {
+        task_name,
+        task_description,
+        tasks_status,
+        task_priority,
+        assigned_to,
+        due_date,
+        updated_at,
+    } = req.body;
+
+    assigned_to = assigned_to ? assigned_to : null;
+    due_date = due_date || null;
+
+
 
   //SQL query to update the task in database
   const sql = `
@@ -457,7 +463,7 @@ router.put("/task/update/:task_id", (req, res) => {
               due_date = $6, 
               updated_at = $7
             WHERE id = $8
-            RETURNING id, task_name, updated_at
+            RETURNING id, task_name, updated_at, activity_id
             `;
 
   //ERROR HANDLING: checking if name was provided
@@ -472,61 +478,68 @@ router.put("/task/update/:task_id", (req, res) => {
       message: "Failed to locate task!",
     });
 
-  //Query the database with sql and values
-  db.query(sql, [
-    task_name,
-    task_description,
-    tasks_status,
-    task_priority,
-    assigned_to,
-    due_date,
-    updated_at,
-    task_id,
-  ])
-    .then(() => {
-      res.status(200).json({ message: "Task updated successfully" });
-    })
-    .catch((err) => {
-      console.error("database error encountered: ", err);
-      res.status(500).json({ message: err });
-    });
+
+    //Query the database with sql and values
+    db.query(sql, [
+        task_name,
+        task_description,
+        tasks_status,
+        task_priority,
+        assigned_to,
+        due_date,
+        updated_at,
+        task_id,
+    ])
+        .then((result) => {
+            const activity_id = result.rows[0].activity_id;
+
+            res.status(200).json({
+                activity_id,
+                message: "Task updated successfully",
+            });
+        })
+        .catch((err) => {
+            console.error("database error encountered: ", err);
+            res.status(500).json({ message: err });
+        });
+
 });
 
 //route to delete activity
 router.delete("/delete/:activity_id", (req, res) => {
-  //activity_id initializing
-  const activity_id = req.params.activity_id;
-  // activity_id is a foreign key in the tasks table, so we delete the tasks first and after that the activity
-  const sql = `
+    //activity_id initializing
+    const activity_id = req.params.activity_id;
+    // activity_id is a foreign key in the tasks table, so we delete the tasks first and after that the activity
+    const sql = `
   DELETE FROM tasks where activity_id=$1
   `;
-  //ERROR HANDLING: checking if activity_id was provided
-  if (!activity_id || activity_id == 0)
-    return res.status(400).json({
-      success: false,
-      message: "Failed to locate Activity!",
-    });
-  db.query(sql, [activity_id]).then(() => {
-    //SQL query to delete the activity from DB
-    const sql = `
+    //ERROR HANDLING: checking if activity_id was provided
+    if (!activity_id || activity_id == 0)
+        return res.status(400).json({
+            success: false,
+            message: "Failed to locate Activity!",
+        });
+    db.query(sql, [activity_id]).then(() => {
+        //SQL query to delete the activity from DB
+        const sql = `
     DELETE FROM activities
     WHERE activity_id = $1`;
-    //Query the database with sql and values
-    db.query(sql, [activity_id])
-      .then(() => {
-        res.status(200).json({
-          success: true,
-          message: "Actvity deleted successfully",
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          success: false,
-          message: "Error",
-          err,
-        });
-      });
-  });
+        //Query the database with sql and values
+        db.query(sql, [activity_id])
+            .then(() => {
+                res.status(200).json({
+                    success: true,
+                    message: "Actvity deleted successfully",
+                });
+            })
+            .catch((err) => {
+                res.status(500).json({
+                    success: false,
+                    message: "Error",
+                    err,
+                });
+            });
+    });
 });
 
 //route to delete task
