@@ -21,7 +21,6 @@ function renderSidebarTeams() {
       let teamsAnchors = ``;
       res.data.teams.forEach((team) => {
         //Declared the renderActivity() as global scope on the bottom of the page
-        console.log(team)
         teamsAnchors += `<a href="#" onclick='renderTeam(${team.team_id})'>${team.team_name}</a>`;
       });
   
@@ -31,80 +30,71 @@ function renderSidebarTeams() {
 }
 
 function renderTeam(team_id) {
-    const content = document.getElementById("main_content");
-    // content.innerHTML = `<div class="action-panel">
-    //     <h2>Action Panel</h2>
-    //     <button id="add-button">Add</button>
-    //     <button id="delete-button">Delete</button>
-    //     <button id="update-button">Update</button>
-    // </div>`;
+  const content = document.getElementById("main_content");
+  //creating a container to hold the cards
+  let card_container = document.getElementById("stats");
 
-    //creating a container to hold the cards
-    let card_container = document.getElementById("stats");
-
-    if(card_container == null){
-        card_container = document.createElement("div");
-        card_container.classList.add("card-container");
-        card_container.id = "stats";
-    }
-    axios.get("/api/teams/get/"+team_id)
-        .then((res) => {
-            if(res.data != null){
-                let template = ``;
-                content.innerHTML = `
-                    <div class="action-panel">
-                        <h2>${res.data.team_name ?? "-"}</h2>
-                        <button id="add-button"><i class="fa-solid fa-user-plus"></i></button>
-                        <button id="delete-button"><i class="fa-solid fa-trash-can"></i></button>
-                        <button id="update-button"><i class="fa-solid fa-pen-to-square"></i></button>
-                    </div>
-                    <div class="members-container">
-                        <h2>Members</h2>
-                        <ul id="member-list">
-                        </ul>
-                    </div>
-                    `;
-                    document.getElementById("add-button").addEventListener("click", () => {
-                        addTeamMember(team_id)
-                    });
-                res.data.activities.forEach(activity => {
-                    template += `
-                        <div class="card">
-                            <h2>${activity.activity_name}</h2>
-                            <div class="count">Pending : ${activity.num_pending_tasks}</div>
-                            <div class="count">In Progress : ${activity.num_in_progress_tasks}</div>
-                            <div class="count">Completed : ${activity.num_completed_tasks}</div>
-                        </div>`; 
-                });
-                const memberList = document.getElementById("member-list");
-                res.data.members.forEach(member => {
-                    const listItem = document.createElement("li");
-                    listItem.classList.add("member-item");
-                
-                    // Member name
-                    const memberName = document.createElement("span");
-                    memberName.classList.add("member-name");
-                    memberName.textContent = member.user_name;
-                
-                    // Remove button
-                    const removeButton = document.createElement("button");
-                    removeButton.classList.add("remove-button");
-                    removeButton.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
-
-                    removeButton.addEventListener("click", () => {
-                        axios.delete("/api/team/members/remove/"+member.member_id)
-                            .then((res) => {
-                                renderTeam(team_id);
-                            })
-                    });
-                    listItem.appendChild(memberName);
-                    listItem.appendChild(removeButton);
-                    memberList.appendChild(listItem);
-                })
-                card_container.innerHTML = template;
-                content.appendChild(card_container);
-            }
+  if(card_container == null){
+      card_container = document.createElement("div");
+      card_container.classList.add("card-container");
+      card_container.id = "stats";
+  }
+  axios.get("/api/teams/get/"+team_id)
+    .then((res) => {
+      if(res.data != null){
+        let template = ``;
+        content.innerHTML = `
+          <div class="action-panel">
+              <h2>${res.data.team_name ?? "-"}</h2>
+              <button id="add-button"><i class="fa-solid fa-user-plus"></i></button>
+              <button id="delete-button"><i class="fa-solid fa-trash-can"></i></button>
+              <button id="update-button"><i class="fa-solid fa-pen-to-square"></i></button>
+          </div>
+          <div class="members-container">
+              <h2>Members</h2>
+              <ul id="member-list">
+              </ul>
+          </div>`;
+        document.getElementById("add-button").addEventListener("click", () => {
+            addTeamMember(team_id)
         });
+        res.data.activities.forEach(activity => {
+            template += `
+                <div class="card">
+                    <h2>${activity.activity_name}</h2>
+                    <div class="count">Pending : ${activity.num_pending_tasks}</div>
+                    <div class="count">In Progress : ${activity.num_in_progress_tasks}</div>
+                    <div class="count">Completed : ${activity.num_completed_tasks}</div>
+                </div>`; 
+        });
+        const memberList = document.getElementById("member-list");
+        res.data.members.forEach(member => {
+          const listItem = document.createElement("li");
+          listItem.classList.add("member-item");
+              
+          // Member name
+          const memberName = document.createElement("span");
+          memberName.classList.add("member-name");
+          memberName.textContent = member.user_name;
+              
+          // Remove button
+          const removeButton = document.createElement("button");
+          removeButton.classList.add("remove-button");
+          removeButton.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
+          removeButton.addEventListener("click", () => {
+              axios.delete("/api/team/members/remove/"+member.member_id)
+                  .then((res) => {
+                      renderTeam(team_id);
+                  })
+          });
+          listItem.appendChild(memberName);
+          listItem.appendChild(removeButton);
+          memberList.appendChild(listItem);
+        })
+      card_container.innerHTML = template;
+      content.appendChild(card_container);
+    }
+  });
     
     
 }

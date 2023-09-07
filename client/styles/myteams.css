@@ -8,6 +8,7 @@
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
+    margin-top: 20px;
 }
   
 h2 {
@@ -61,7 +62,13 @@ h2 {
     padding: 3px 10px;
     cursor: pointer;
   }
-  
+  .edit-button {
+    background-color: var(--green600);
+    color: #fff;
+    border: none;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
   .remove-button:hover{
     background-color: #fd8e8e;
   }
