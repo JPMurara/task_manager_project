@@ -1,69 +1,69 @@
 .formsContainer {
-  display: flex;
-  height: 60px;
-  background-color: var(--pink600);
-  border: 0px;
-  border-radius: 8px;
-  padding: 20px;
-  justify-content: space-around;
+    display: flex;
+    height: 60px;
+    background-color: var(--pink600);
+    border: 0px;
+    border-radius: 8px;
+    padding: 20px;
+    justify-content: space-around;
 }
 
 .openai {
-  width: 100%;
+    width: 100%;
 }
 
 .userAddActivityForm {
-  width: 100%;
+    width: 100%;
 }
 
 form {
-  padding: 10px;
+    padding: 10px;
 }
 
 #message,
 #userActivity {
-  display: inline-block;
-  width: calc(95% - 130px);
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+    display: inline-block;
+    width: calc(95% - 130px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 button {
-  display: inline-block;
-  background-color: var(--green600);
-  color: #fff;
-  border: 0px;
-  border-radius: 4px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  margin: 2px;
+    display: inline-block;
+    background-color: var(--green600);
+    color: #fff;
+    border: 0px;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 2px;
 }
 
 button:hover {
-  border: 0px;
-  background-color: var(--beige);
+    border: 0px;
+    background-color: var(--beige);
 }
 
 .sidebar {
-  margin: 0;
-  padding: 0;
-  width: 200px;
-  background-color: var(--pink600);
-  position: fixed;
-  height: 100%;
-  overflow: auto;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: var(--pink600);
+    position: fixed;
+    height: 100%;
+    overflow: auto;
 }
 
 .sidebar a,
 .sidebar i {
-  display: block;
-  color: var(--beige);
-  padding: 16px;
-  text-decoration: none;
+    display: block;
+    color: var(--beige);
+    padding: 16px;
+    text-decoration: none;
 }
 
 /* .sidebar a.active,
@@ -74,46 +74,109 @@ i.active {
 
 .sidebar a:hover:not(.active),
 i:hover:not(.active) {
-  color: var(--green600);
-  cursor: pointer;
+    color: var(--green600);
+    cursor: pointer;
 }
 
 .activityContainer {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 div.content {
-  margin: 50px;
-  margin-left: 200px;
-  padding: 1px 16px;
-  height: 1000px;
+    margin: 50px;
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 1000px;
 }
 
 .row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 .column {
-  background-color: var(--beige);
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: var(--beige);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.tasklistContainer{
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.tasklistContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .activity_header,
 .activity_header h1 {
-  text-align: center;
-  padding: 20px;
+    text-align: center;
+    padding: 20px;
 }
 .separator {
-  border-top: 1px solid #ccc;
-  margin: 10px 0;
+    border-top: 1px solid #ccc;
+    margin: 10px 0;
+}
+
+/* DIALOG EDIT  */
+
+.task-dialog {
+    width: 500px;
+    border: 1px solid #ccc;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 20px;
+
+    background-color: #ffffff;
+}
+
+/* Form inside dialog */
+.dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* All input fields and select boxes */
+.dialog-form input,
+.dialog-form select,
+.dialog-form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box; /* Ensures padding and borders are included in the total width */
+}
+
+/* Close button for the dialog */
+.close-button {
+    position: absolute;
+    padding: 5px;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+/* Submit button for the form */
+#saveTask {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #4caf50; /* Green */
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+#saveTask:hover {
+    background-color: #388e3c; /* Darker Green on hover */
+}
+
+/* Labels for a clearer appearance */
+.dialog-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
 }

@@ -231,33 +231,32 @@ function addTask(activity_id) {
         <label for="add_due_date">Due Date:</label>
         <input type="date" id="add_due_date" name="due_date" value="0001-01-01">
 
-        <input type="submit" id="saveAddTask" value="Save">
+        <input type="submit" id="saveTask" value="Save">
     `;
 
-    const closeBtn = document.createElement("button");
-    closeBtn.textContent = "Close";
+    const closeTaskIcon = document.createElement("i");
+    closeTaskIcon.classList.add("fa-solid", "fa-rectangle-xmark");
 
     // Add classes to elements for styling
-    dialog.classList.add("dialog");
-    closeBtn.classList.add("close-button");
+    dialog.classList.add("task-dialog");
+    closeTaskIcon.classList.add("close-button");
     form.classList.add("dialog-form");
 
     // Append form and button to dialog, then dialog to the document
     dialog.append(form);
-    dialog.append(closeBtn);
+    dialog.append(closeTaskIcon);
     document.body.appendChild(dialog);
 
     // Display the dialog when function is called
     dialog.showModal();
 
     // Close the dialog box when the button close is clicked
-    closeBtn.addEventListener("click", function () {
+    closeTaskIcon.addEventListener("click", function () {
         dialog.close();
-        document.body.removeChild(dialog); // Optional: remove dialog from DOM after closing
     });
     //WHEN CLICK SAVE, GET THE INFO AND insert ON DB
 
-    document.getElementById("saveAddTask").addEventListener("click", (e) => {
+    document.getElementById("saveTask").addEventListener("click", (e) => {
         e.preventDefault();
         const taskData = {
             task_name: document.getElementById("add_task_name").value,
@@ -297,7 +296,7 @@ function renderSidebarActivities() {
             const activityContainer = document.createElement("div");
             activityContainer.classList.add("activityContainer");
             activityContainer.innerHTML = `
-      <a href="" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
+      <a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
       `;
             sidebar.appendChild(activityContainer);
         });
@@ -481,33 +480,33 @@ function editTask(task, activity_id) {
             task.due_date || "0001-01-01"
         }">
 
-        <input type="submit" id="saveEditTask" value="Save">
+        <input type="submit" id="saveTask" value="Save">
     `;
 
-    const closeBtn = document.createElement("button");
-    closeBtn.textContent = "Close";
+    const closeTaskIcon = document.createElement("i");
+    closeTaskIcon.classList.add("fa-solid", "fa-rectangle-xmark");
 
     // Add classes to elements for styling
-    dialog.classList.add("dialog");
-    closeBtn.classList.add("close-button");
+    dialog.classList.add("task-dialog");
+    closeTaskIcon.classList.add("close-button");
     form.classList.add("dialog-form");
 
     // Append form and button to dialog, then dialog to the document
     dialog.append(form);
-    dialog.append(closeBtn);
+    dialog.append(closeTaskIcon);
     document.body.appendChild(dialog);
 
     // Display the dialog when function is called
     dialog.showModal();
 
     // Close the dialog box when the button close is clicked
-    closeBtn.addEventListener("click", function () {
+    closeTaskIcon.addEventListener("click", function () {
         dialog.close();
     });
 
     //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
 
-    document.getElementById("saveEditTask").addEventListener("click", (e) => {
+    document.getElementById("saveTask").addEventListener("click", (e) => {
         e.preventDefault();
         const taskData = {
             task_name: document.getElementById("edit_task_name").value,
