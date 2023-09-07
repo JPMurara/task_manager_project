@@ -6,12 +6,17 @@ function renderDashboard() {
 
     const page = document.getElementById("page");
 
+    //Spinner
+    const spinner = document.createElement("div");
+    spinner.classList.add("spinner");
+
     const content = document.createElement("div");
     content.classList.add("content");
     content.id = "main_content";
 
     const activityContainer = document.createElement("div");
     activityContainer.id = "activityCont";
+
     // modal to display messages
     const errorContainer = document.createElement("div");
     errorContainer.classList.add("errorContainer");
@@ -45,7 +50,7 @@ function renderDashboard() {
     `;
 
     formsContainer.append(openai, userAddActivityForm);
-    content.append(formsContainer, errorContainer, activityContainer);
+    content.append(formsContainer, errorContainer, activityContainer, spinner);
     page.replaceChildren(content);
     renderSidebarActivities();
     getActivity();
@@ -55,10 +60,13 @@ function renderDashboard() {
 function renderActivity(activity_id) {
     console.log(activity_id);
     const content = document.getElementById("activityCont");
-    content.innerHTML = ``;
+    content.innerHTML = "";
+
+    const spinner = document.querySelector(".spinner");
     axios
         .get("/api/activity/get/" + activity_id)
         .then((res) => {
+            spinner.style.display = "block";
             if (res.data != null) {
                 // Create a div with class "action-panel"
                 const actionPanelDiv = document.createElement("div");
@@ -190,9 +198,11 @@ function renderActivity(activity_id) {
                     }
                 });
             }
+            spinner.style.display = "none";
         })
         .catch((err) => {
             console.log(err);
+            spinner.style.display = "none";
         });
 }
 
@@ -309,20 +319,16 @@ function deleteActivity(activity_id) {
     const errorDialog = document.querySelector("#formsContainerDialog");
     const errorMessage = document.querySelector(".errorMessage");
     const mainContent = document.querySelector("#main_content");
-    const activityHeader = document.querySelector(".activity_header");
-    const row = document.querySelector(".row");
+
     axios
         .delete("/api/activity/delete/" + activity_id)
         .then((res) => {
             renderDashboard();
-            // removes information about the deleted activity from the dashboard view
-            mainContent.removeChild(row);
-            mainContent.removeChild(activityHeader);
         })
         .catch((error) => {
             // displays the error in the modal
+            errorMessage.innerText = error.response;
             errorDialog.showModal();
-            errorMessage.innerText = error.response.data.message;
             setTimeout(() => {
                 errorDialog.close();
             }, "3000");
@@ -408,21 +414,23 @@ function renderLastActivity() {
     axios
         .get("/api/activity/getLast")
         .then((res) => {
-            if (res.data) {
-                renderActivity(res.data.activity_id);
-            } else {
-                // No activity exists. Handle this case accordingly.
-                // For example, show a message to the user indicating no activities are present.
-                const content = document.getElementById("main_content");
-                const message = document.createElement("h3");
-                message.classList.add("no-activity-message");
-                message.textContent = "No activities found. Please create one!";
-                content.appendChild(message);
-            }
+            renderActivity(res.data.activity_id);
         })
         .catch((error) => {
+            // No activity exists. Handle this case accordingly.
+            // For example, show a message to the user indicating no activities are present.
+            const content = document.getElementById("main_content");
+
+            //Intro Dashboard Message
+            const message = document.createElement("h3");
+            message.classList.add("no-activity-message");
+            message.textContent = error.response.data.message;
+
+            //Intro Dashboard Image
+            const image = document.createElement("img");
+            image.src = "../../styles/img/work.png";
+            content.append(message, image);
             console.error("Error fetching the last activity:", error);
-            // Handle any other errors that may arise.
         });
 }
 
