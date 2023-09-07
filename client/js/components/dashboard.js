@@ -1,53 +1,53 @@
 import { renderHeader } from "./header.js";
 
 function renderDashboard() {
-    //Always show the last activity when user click on Dashboard
-    renderLastActivity();
+  //Always show the last activity when user click on Dashboard
+  renderLastActivity();
 
-    const page = document.getElementById("page");
+  const page = document.getElementById("page");
 
-    //Spinner
+  //Spinner
     const spinner = document.createElement("div");
     spinner.classList.add("spinner");
+  const content = document.createElement("div");
+  content.classList.add("content");
+  content.id = "main_content";
 
-    const content = document.createElement("div");
-    content.classList.add("content");
-    content.id = "main_content";
+  const activityContainer = document.createElement("div");
+  activityContainer.id = "activityCont";
+  // modal to display messages
+  const errorContainer = document.createElement("div");
+  errorContainer.classList.add("errorContainer");
+  errorContainer.innerHTML = `
 
-    const activityContainer = document.createElement("div");
-    activityContainer.id = "activityCont";
-
-    // modal to display messages
-    const errorContainer = document.createElement("div");
-    errorContainer.classList.add("errorContainer");
-    errorContainer.innerHTML = `
     <dialog class="dialog" id="formsContainerDialog">
       <p class="errorMessage"></p>
     </dialog>
   `;
 
-    const formsContainer = document.createElement("div");
-    formsContainer.classList.add("formsContainer");
+  const formsContainer = document.createElement("div");
+  formsContainer.classList.add("formsContainer");
 
-    //ACTIVITIES INPUT TO GET TASKS - AI ASSIST
-    const openai = document.createElement("div");
-    openai.classList.add("openai");
-    openai.innerHTML = `
+  //ACTIVITIES INPUT TO GET TASKS - AI ASSIST
+  const openai = document.createElement("div");
+  openai.classList.add("openai");
+  openai.innerHTML = `
     <form action="" id="formAI">
         <input type="text" name="message" id="message" placeholder="Add an activity (AI Assist)..." required>
         <button type="submit">AI Assist</button>
     </form>
     `;
 
-    // User manually add activity
-    const userAddActivityForm = document.createElement("div");
-    userAddActivityForm.classList.add("userAddActivityForm");
-    userAddActivityForm.innerHTML = `
+  // User manually add activity
+  const userAddActivityForm = document.createElement("div");
+  userAddActivityForm.classList.add("userAddActivityForm");
+  userAddActivityForm.innerHTML = `
     <form action="" id="userActivityForm">
       <input type="text" name="userActivity" id="userActivity" placeholder="Add your own activity..." required>
       <button>Add</button>
     </form>
     `;
+
 
     formsContainer.append(openai, userAddActivityForm);
     content.append(formsContainer, errorContainer, activityContainer, spinner);
@@ -55,6 +55,7 @@ function renderDashboard() {
     renderSidebarActivities();
     getActivity();
     postUserActivity();
+
 }
 
 function renderActivity(activity_id) {
@@ -97,6 +98,9 @@ function renderActivity(activity_id) {
                 const updateIcon = document.createElement("i");
                 updateIcon.classList.add("fa-solid", "fa-pen-to-square");
                 updateButton.appendChild(updateIcon);
+                updateButton.addEventListener("click", () => {
+                    editActivity(res.data)
+                });
 
                 // Append the elements to the actionPanelDiv
                 actionPanelDiv.appendChild(h2Element);
@@ -204,17 +208,22 @@ function renderActivity(activity_id) {
             console.log(err);
             spinner.style.display = "none";
         });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 function addTask(activity_id) {
-    // retrieves the value of the "activityId" data attribute from the HTML element that triggered an event
-    //   variable from old event listener. delete if loop is working
-    //   const activity_id = e.currentTarget.dataset.activityId;
-    const dialog = document.createElement("dialog");
-    // need to get the user id to insert into the DB
-    const form = document.createElement("form");
-    form.id = "addTask";
-    form.innerHTML = `
+  // retrieves the value of the "activityId" data attribute from the HTML element that triggered an event
+  //   variable from old event listener. delete if loop is working
+  //   const activity_id = e.currentTarget.dataset.activityId;
+  const dialog = document.createElement("dialog");
+  // need to get the user id to insert into the DB
+  const form = document.createElement("form");
+  form.id = "addTask";
+  form.innerHTML = `
         <label for="add_task_name">Name:</label>
         <input type="text" id="add_task_name" name="task_name">
 
@@ -239,83 +248,89 @@ function addTask(activity_id) {
         <input type="number" id="add_assigned_to" name="assigned_to">
 
         <label for="add_due_date">Due Date:</label>
-        <input type="date" id="add_due_date" name="due_date" value="0001-01-01">
+        <input type="date" id="add_due_date" name="due_date">
 
         <input type="submit" id="saveTask" value="Save">
     `;
 
-    const closeTaskIcon = document.createElement("i");
-    closeTaskIcon.classList.add("fa-solid", "fa-rectangle-xmark");
+  const closeTaskIcon = document.createElement("i");
+  closeTaskIcon.classList.add("fa-solid", "fa-rectangle-xmark");
 
-    // Add classes to elements for styling
-    dialog.classList.add("task-dialog");
-    closeTaskIcon.classList.add("close-button");
-    form.classList.add("dialog-form");
+  // Add classes to elements for styling
+  dialog.classList.add("task-dialog");
+  closeTaskIcon.classList.add("close-button");
+  form.classList.add("dialog-form");
 
-    // Append form and button to dialog, then dialog to the document
-    dialog.append(form);
-    dialog.append(closeTaskIcon);
-    document.body.appendChild(dialog);
+  // Append form and button to dialog, then dialog to the document
+  dialog.append(form);
+  dialog.append(closeTaskIcon);
+  document.body.appendChild(dialog);
 
-    // Display the dialog when function is called
-    dialog.showModal();
+  // Display the dialog when function is called
+  dialog.showModal();
 
-    // Close the dialog box when the button close is clicked
-    closeTaskIcon.addEventListener("click", function () {
+  // Close the dialog box when the button close is clicked
+  closeTaskIcon.addEventListener("click", function () {
+    dialog.close();
+  });
+  //WHEN CLICK SAVE, GET THE INFO AND insert ON DB
+
+  document.getElementById("saveTask").addEventListener("click", (e) => {
+    e.preventDefault();
+    const errorDialog = document.querySelector("#formsContainerDialog");
+    const errorMessage = document.querySelector(".errorMessage");
+
+    const taskData = {
+      task_name: document.getElementById("add_task_name").value,
+      task_description: document.getElementById("add_task_description").value,
+      tasks_status: document.getElementById("add_task_status").value,
+      task_priority: document.getElementById("add_task_priority").value,
+      assigned_to: parseInt(document.getElementById("add_assigned_to").value),
+      due_date: new Date(document.getElementById("add_due_date").value),
+      updated_at: new Date().toISOString().slice(0, 19).replace("T", " "), // Format: 'YYYY-MM-DD HH:MM:SS'
+    };
+    axios
+      .post("/api/activity/task/add_new/" + activity_id, taskData)
+      .then((res) => {
         dialog.close();
-    });
-    //WHEN CLICK SAVE, GET THE INFO AND insert ON DB
-
-    document.getElementById("saveTask").addEventListener("click", (e) => {
-        e.preventDefault();
-        const taskData = {
-            task_name: document.getElementById("add_task_name").value,
-            task_description: document.getElementById("add_task_description")
-                .value,
-            tasks_status: document.getElementById("add_task_status").value,
-            task_priority: document.getElementById("add_task_priority").value,
-            assigned_to: parseInt(
-                document.getElementById("add_assigned_to").value
-            ),
-            due_date: new Date(document.getElementById("add_due_date").value),
-            updated_at: new Date().toISOString().slice(0, 19).replace("T", " "), // Format: 'YYYY-MM-DD HH:MM:SS'
-        };
-        axios
-            .post("/api/activity/task/add_new/" + activity_id, taskData)
-            .then((res) => {
-                dialog.close();
-                console.log(res.data);
-                document.body.removeChild(dialog);
-                renderActivity(activity_id);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    });
+        console.log(res.data);
+        document.body.removeChild(dialog);
+        renderActivity(activity_id);
+      })
+      .catch((error) => {
+        // displays the error in the modal
+        errorDialog.showModal();
+        errorMessage.innerText = error.response.data.message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "3000");
+      });
+  });
 }
 
 function renderSidebarActivities() {
-    const page = document.getElementById("page");
-    const sidebar = document.createElement("div");
-    sidebar.classList.add("sidebar");
-    sidebar.innerHTML = " ";
-    //Get all activities from DB and render here
-    axios.get("/api/activity/getAll").then((res) => {
-        res.data.forEach((activity) => {
-            //Declared the renderActivity() and deleteActivity() as global scope on the bottom of the page
-            const activityContainer = document.createElement("div");
-            activityContainer.classList.add("activityContainer");
-            activityContainer.innerHTML = `
+  const page = document.getElementById("page");
+  const sidebar = document.createElement("div");
+  sidebar.classList.add("sidebar");
+  sidebar.innerHTML = " ";
+  //Get all activities from DB and render here
+  axios.get("/api/activity/getAll").then((res) => {
+    res.data.forEach((activity) => {
+      //Declared the renderActivity() and deleteActivity() as global scope on the bottom of the page
+      const activityContainer = document.createElement("div");
+      activityContainer.classList.add("activityContainer");
+      activityContainer.innerHTML = `
       <a href="#" onclick='renderActivity(${activity.activity_id})'>${activity.activity_name}</a>
       `;
-            sidebar.appendChild(activityContainer);
-        });
-        page.append(sidebar);
+      sidebar.appendChild(activityContainer);
     });
+    page.append(sidebar);
+  });
 }
 
 // delete an activity
 function deleteActivity(activity_id) {
+
     const errorDialog = document.querySelector("#formsContainerDialog");
     const errorMessage = document.querySelector(".errorMessage");
     const mainContent = document.querySelector("#main_content");
@@ -333,84 +348,98 @@ function deleteActivity(activity_id) {
                 errorDialog.close();
             }, "3000");
         });
+
 }
 
 // delete an task
 function deleteTask(task_id, activity_id) {
-    axios
-        .delete("/api/activity/task/delete/" + task_id)
-        .then((res) => {
-            renderActivity(activity_id);
-        })
-        .catch((error) => {
-            // displays the error in the modal
-            errorDialog.showModal();
-            errorMessage.innerText = error.response.data.message;
-            setTimeout(() => {
-                errorDialog.close();
-            }, "3000");
-        });
+  axios
+    .delete("/api/activity/task/delete/" + task_id)
+    .then((res) => {
+      renderActivity(activity_id);
+    })
+    .catch((error) => {
+      // displays the error in the modal
+      errorDialog.showModal();
+      errorMessage.innerText = error.response.data.message;
+      setTimeout(() => {
+        errorDialog.close();
+      }, "3000");
+    });
 }
 
 // post new activities inserted with AI assist
 function getActivity() {
-    const form = document.querySelector("form");
+  const form = document.querySelector("form");
+  const errorDialog = document.querySelector("#formsContainerDialog");
+  const errorMessage = document.querySelector(".errorMessage");
+  const messageInput = document.querySelector("#message");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
+    const formData = new FormData(form);
+    const data = {
+      activity: formData.get("message"),
+    };
 
-        const formData = new FormData(form);
-        const data = {
-            activity: formData.get("message"),
-        };
-
-        //POST ACTIVITY NAME
-        axios.post("/api/activity", data).then((res) => {
-            console.log(res.data);
-            //Render the new tasks on dashboard after posting it
-            if (res.data && res.data.activity_id) {
-                renderActivity(res.data.activity_id);
-            }
-
-            //Refresh sidebar activities
-            renderSidebarActivities();
-        });
-    });
+    //POST ACTIVITY NAME
+    axios
+      .post("/api/activity", data)
+      .then((res) => {
+        //Render the new tasks on dashboard after posting it
+        if (res.data && res.data.activity_id) {
+          renderActivity(res.data.activity_id);
+        }
+        //Refresh sidebar activities
+        renderSidebarActivities();
+        messageInput.value = "";
+      })
+      .catch((error) => {
+        // displays the error in the modal (if activity already exists)
+        errorDialog.showModal();
+        errorMessage.innerText = error.response.data.message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "3000");
+        userActivity.value = "";
+      });
+  });
 }
 
 // post new activities inserted by the user
 function postUserActivity() {
-    const form = document.querySelector("#userActivityForm");
-    const errorDialog = document.querySelector("#formsContainerDialog");
-    const errorMessage = document.querySelector(".errorMessage");
-    const userActivity = document.querySelector("#userActivity");
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
+  const form = document.querySelector("#userActivityForm");
+  const errorDialog = document.querySelector("#formsContainerDialog");
+  const errorMessage = document.querySelector(".errorMessage");
+  const userActivity = document.querySelector("#userActivity");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-        const formData = new FormData(form);
-        const data = {
-            activity: formData.get("userActivity"),
-        };
-        axios
-            .post("/api/activity/userAdd", data)
-            .then((res) => {
-                // refresh the dashboard
-                renderDashboard();
-            })
-            .catch((error) => {
-                // displays the error in the modal (if activity already exists)
-                errorDialog.showModal();
-                errorMessage.innerText = error.response.data.message;
-                setTimeout(() => {
-                    errorDialog.close();
-                }, "3000");
-                userActivity.value = "";
-            });
-    });
+    const formData = new FormData(form);
+    const data = {
+      activity: formData.get("userActivity"),
+    };
+    axios
+      .post("/api/activity/userAdd", data)
+      .then((res) => {
+        // refresh the dashboard
+        renderDashboard();
+      })
+      .catch((error) => {
+        // displays the error in the modal (if activity already exists)
+        errorDialog.showModal();
+        errorMessage.innerText = error.response.data.message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "3000");
+        userActivity.value = "";
+      });
+  });
 }
 
 //IF NO ACTIVITY TELL THE USER TO SHOW A MESSAGE
 function renderLastActivity() {
+
     axios
         .get("/api/activity/getLast")
         .then((res) => {
@@ -432,110 +461,190 @@ function renderLastActivity() {
             content.append(message, image);
             console.error("Error fetching the last activity:", error);
         });
+
 }
 
 function editTask(task, activity_id) {
-    console.log(task.task_id);
-    // Create elements
-    const dialog = document.createElement("dialog");
+  console.log(task.task_id);
+  // Create elements
+  const dialog = document.createElement("dialog");
 
-    const form = document.createElement("form");
-    form.id = "editTaskForm";
-    form.innerHTML = `
+  const form = document.createElement("form");
+  form.id = "editTaskForm";
+  form.innerHTML = `
         <label for="edit_task_name">Name:</label>
         <input type="text" id="edit_task_name" name="task_name" value="${
-            task.task_name || ""
+          task.task_name || ""
         }">
 
         <label for="edit_task_description">Description:</label>
         <textarea id="edit_task_description" name="task_description">${
-            task.task_description || ""
+          task.task_description || ""
         }</textarea>
 
         <label for="edit_task_status">Status:</label>
         <select id="edit_task_status" name="task_status">
             <option value="pending" ${
-                task.tasks_status === "pending" ? "selected" : ""
+              task.tasks_status === "pending" ? "selected" : ""
             }>Pending</option>
             <option value="in_progress" ${
-                task.tasks_status === "in_progress" ? "selected" : ""
+              task.tasks_status === "in_progress" ? "selected" : ""
             }>In Progress</option>
             <option value="completed" ${
-                task.tasks_status === "completed" ? "selected" : ""
+              task.tasks_status === "completed" ? "selected" : ""
             }>Completed</option>
         </select>
 
         <label for="edit_task_priority">Priority:</label>
         <select id="edit_task_priority" name="task_priority">
             <option value="low" ${
-                task.task_priority === "low" ? "selected" : ""
+              task.task_priority === "low" ? "selected" : ""
             }>Low</option>
             <option value="medium" ${
-                task.task_priority === "medium" ? "selected" : ""
+              task.task_priority === "medium" ? "selected" : ""
             }>Medium</option>
             <option value="high" ${
-                task.task_priority === "high" ? "selected" : ""
+              task.task_priority === "high" ? "selected" : ""
             }>High</option>
         </select>
 
         <label for="edit_assigned_to">Assigned To:</label>
         <input type="number" id="edit_assigned_to" name="assigned_to" value="${
-            task.assigned_to || ""
+          task.assigned_to || ""
         }">
 
         <label for="edit_due_date">Due Date:</label>
         <input type="date" id="edit_due_date" name="due_date" value="${
-            task.due_date || "0001-01-01"
+          task.due_date || "0001-01-01"
         }">
 
         <input type="submit" id="saveTask" value="Save">
     `;
 
-    const closeTaskIcon = document.createElement("i");
-    closeTaskIcon.classList.add("fa-solid", "fa-rectangle-xmark");
+  const closeTaskIcon = document.createElement("i");
+  closeTaskIcon.classList.add("fa-solid", "fa-rectangle-xmark");
+
+  // Add classes to elements for styling
+  dialog.classList.add("task-dialog");
+  closeTaskIcon.classList.add("close-button");
+  form.classList.add("dialog-form");
+
+  // Append form and button to dialog, then dialog to the document
+  dialog.append(form);
+  dialog.append(closeTaskIcon);
+  document.body.appendChild(dialog);
+
+  // Display the dialog when function is called
+  dialog.showModal();
+
+  // Close the dialog box when the button close is clicked
+  closeTaskIcon.addEventListener("click", function () {
+    dialog.close();
+  });
+
+  //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
+  document.getElementById("saveTask").addEventListener("click", (e) => {
+    e.preventDefault();
+    const taskData = {
+      task_name: document.getElementById("edit_task_name").value,
+      task_description: document.getElementById("edit_task_description").value,
+      tasks_status: document.getElementById("edit_task_status").value,
+      task_priority: document.getElementById("edit_task_priority").value,
+      assigned_to: parseInt(document.getElementById("edit_assigned_to").value),
+      due_date: new Date(document.getElementById("edit_due_date").value),
+      updated_at: new Date().toISOString().slice(0, 19).replace("T", " "), // Format: 'YYYY-MM-DD HH:MM:SS'
+    };
+
+    axios
+      .put("/api/activity/task/update/" + task.task_id, taskData)
+      .then((response) => {
+        dialog.close();
+        console.log(response.data);
+        document.body.removeChild(dialog);
+        renderActivity(activity_id);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  });
+}
+
+function editActivity(activity) {
+    console.log(activity);
+    // Create elements
+    const dialog = document.createElement("dialog");
+
+    const form = document.createElement("form");
+    form.id = "editActivityForm";
+    form.innerHTML = `
+        <label for="edit_activity_name">Name:</label>
+        <input type="text" id="edit_activity_name" name="activity_name" value="${
+            activity.activity_name || ""
+        }">
+
+        <label for="team_id">Team:</label>
+        <select id="team_id" name="team_id">
+            <option value="">Select a team</option>
+        </select>
+
+        <input type="submit" id="saveActivity" value="Save">
+    `;
+    
+    const teamSelect = document.getElementById('team_id');
+  
+    // Fetch users from the server using your getAllUsers method or API endpoint
+    axios.get('/api/teams/getAll')
+      .then(res => {
+        console.log(res);
+        // Iterate through the users and create <option> elements
+        res.data.forEach(team => {
+          const option = document.createElement('option');
+          option.value = team.user_id; // Set the value to the user_id
+          option.text = team.team_name; // Set the text to the user's name
+          teamSelect.appendChild(option); // Append the option to the select list
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching teams:', error);
+      });
+
+    const closeActivityIcon = document.createElement("i");
+    closeActivityIcon.classList.add("fa-solid", "fa-rectangle-xmark");
 
     // Add classes to elements for styling
     dialog.classList.add("task-dialog");
-    closeTaskIcon.classList.add("close-button");
+    closeActivityIcon.classList.add("close-button");
     form.classList.add("dialog-form");
 
     // Append form and button to dialog, then dialog to the document
     dialog.append(form);
-    dialog.append(closeTaskIcon);
+    dialog.append(closeActivityIcon);
     document.body.appendChild(dialog);
 
     // Display the dialog when function is called
     dialog.showModal();
 
     // Close the dialog box when the button close is clicked
-    closeTaskIcon.addEventListener("click", function () {
+    closeActivityIcon.addEventListener("click", function () {
         dialog.close();
     });
 
     //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
 
-    document.getElementById("saveTask").addEventListener("click", (e) => {
+    document.getElementById("saveActivity").addEventListener("click", (e) => {
         e.preventDefault();
-        const taskData = {
-            task_name: document.getElementById("edit_task_name").value,
-            task_description: document.getElementById("edit_task_description")
-                .value,
-            tasks_status: document.getElementById("edit_task_status").value,
-            task_priority: document.getElementById("edit_task_priority").value,
-            assigned_to: parseInt(
-                document.getElementById("edit_assigned_to").value
-            ),
-            due_date: new Date(document.getElementById("edit_due_date").value),
-            updated_at: new Date().toISOString().slice(0, 19).replace("T", " "), // Format: 'YYYY-MM-DD HH:MM:SS'
+        const activityData = {
+            activity_name: document.getElementById("edit_activity_name").value,
+            team_id: parseInt(document.getElementById("team_id").value),
         };
 
         axios
-            .put("/api/activity/task/update/" + task.task_id, taskData)
+            .put("/api/activity/update/" + activity.activity_id, activityData)
             .then((response) => {
                 dialog.close();
                 console.log(response.data);
                 document.body.removeChild(dialog);
-                renderActivity(activity_id);
+                renderActivity(activity.activity_id);
             })
             .catch((error) => {
                 console.error(error);
