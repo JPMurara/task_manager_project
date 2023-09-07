@@ -89,6 +89,9 @@ function renderActivity(activity_id) {
                 const updateIcon = document.createElement("i");
                 updateIcon.classList.add("fa-solid", "fa-pen-to-square");
                 updateButton.appendChild(updateIcon);
+                updateButton.addEventListener("click", () => {
+                    editActivity(res.data)
+                });
 
                 // Append the elements to the actionPanelDiv
                 actionPanelDiv.appendChild(h2Element);
@@ -528,6 +531,89 @@ function editTask(task, activity_id) {
                 console.log(response.data);
                 document.body.removeChild(dialog);
                 renderActivity(activity_id);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    });
+}
+
+function editActivity(activity) {
+    console.log(activity);
+    // Create elements
+    const dialog = document.createElement("dialog");
+
+    const form = document.createElement("form");
+    form.id = "editActivityForm";
+    form.innerHTML = `
+        <label for="edit_activity_name">Name:</label>
+        <input type="text" id="edit_activity_name" name="activity_name" value="${
+            activity.activity_name || ""
+        }">
+
+        <label for="team_id">Team:</label>
+        <select id="team_id" name="team_id">
+            <option value="">Select a team</option>
+        </select>
+
+        <input type="submit" id="saveActivity" value="Save">
+    `;
+    
+    const teamSelect = document.getElementById('team_id');
+  
+    // Fetch users from the server using your getAllUsers method or API endpoint
+    axios.get('/api/teams/getAll')
+      .then(res => {
+        console.log(res);
+        // Iterate through the users and create <option> elements
+        res.data.forEach(team => {
+          const option = document.createElement('option');
+          option.value = team.user_id; // Set the value to the user_id
+          option.text = team.team_name; // Set the text to the user's name
+          teamSelect.appendChild(option); // Append the option to the select list
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching teams:', error);
+      });
+
+    const closeActivityIcon = document.createElement("i");
+    closeActivityIcon.classList.add("fa-solid", "fa-rectangle-xmark");
+
+    // Add classes to elements for styling
+    dialog.classList.add("task-dialog");
+    closeActivityIcon.classList.add("close-button");
+    form.classList.add("dialog-form");
+
+    // Append form and button to dialog, then dialog to the document
+    dialog.append(form);
+    dialog.append(closeActivityIcon);
+    document.body.appendChild(dialog);
+
+    // Display the dialog when function is called
+    dialog.showModal();
+
+    // Close the dialog box when the button close is clicked
+    closeActivityIcon.addEventListener("click", function () {
+        dialog.close();
+    });
+
+    //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
+
+    document.getElementById("saveActivity").addEventListener("click", (e) => {
+        e.preventDefault();
+        const activityData = {
+            activity_name: document.getElementById("edit_activity_name").value,
+            team_id: parseInt(document.getElementById("team_id").value),
+        };
+
+        axios
+            .put("/api/activity/update/" + activity.activity_id, activityData)
+            .then((response) => {
+                dialog.close();
+                console.log(response.data);
+                document.body.removeChild(dialog);
+                renderActivity(activity.activity_id);
             })
             .catch((error) => {
                 console.error(error);
