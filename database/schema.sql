@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS members (
 
 CREATE TABLE IF NOT EXISTS activities (
     activity_id SERIAL PRIMARY KEY,
-    activity_name VARCHAR(255) UNIQUE NOT NULL,
+    activity_name VARCHAR(255) NOT NULL,
     team_id INTEGER REFERENCES teams(team_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -353,7 +353,9 @@ function deleteTask(task_id, activity_id) {
 // post new activities inserted with AI assist
 function getActivity() {
   const form = document.querySelector("form");
-
+  const errorDialog = document.querySelector("#formsContainerDialog");
+  const errorMessage = document.querySelector(".errorMessage");
+  const messageInput = document.querySelector("#message");
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -363,16 +365,26 @@ function getActivity() {
     };
 
     //POST ACTIVITY NAME
-    axios.post("/api/activity", data).then((res) => {
-      console.log(res.data);
-      //Render the new tasks on dashboard after posting it
-      if (res.data && res.data.activity_id) {
-        renderActivity(res.data.activity_id);
-      }
-
-      //Refresh sidebar activities
-      renderSidebarActivities();
-    });
+    axios
+      .post("/api/activity", data)
+      .then((res) => {
+        //Render the new tasks on dashboard after posting it
+        if (res.data && res.data.activity_id) {
+          renderActivity(res.data.activity_id);
+        }
+        //Refresh sidebar activities
+        renderSidebarActivities();
+        messageInput.value = "";
+      })
+      .catch((error) => {
+        // displays the error in the modal (if activity already exists)
+        errorDialog.showModal();
+        errorMessage.innerText = error.response.data.message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "3000");
+        userActivity.value = "";
+      });
   });
 }
 
@@ -412,19 +424,18 @@ function renderLastActivity() {
   axios
     .get("/api/activity/getLast")
     .then((res) => {
-      if (res.data) {
-        renderActivity(res.data.activity_id);
-      } else {
-        // No activity exists. Handle this case accordingly.
-        // For example, show a message to the user indicating no activities are present.
-        const content = document.getElementById("main_content");
-        const message = document.createElement("h3");
-        message.classList.add("no-activity-message");
-        message.textContent = "No activities found. Please create one!";
-        content.appendChild(message);
-      }
+      console.log(res.data);
+      renderActivity(res.data.activity_id);
     })
     .catch((error) => {
+      const errorDialog = document.querySelector("#formsContainerDialog");
+      const errorMessage = document.querySelector(".errorMessage");
+      // displays the error in the modal (if activity already exists)
+      errorDialog.showModal();
+      errorMessage.innerText = error.response.data.message;
+      setTimeout(() => {
+        errorDialog.close();
+      }, "3000");
       console.error("Error fetching the last activity:", error);
       // Handle any other errors that may arise.
     });
@@ -509,7 +520,6 @@ function editTask(task, activity_id) {
   });
 
   //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
-
   document.getElementById("saveTask").addEventListener("click", (e) => {
     e.preventDefault();
     const taskData = {

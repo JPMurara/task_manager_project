@@ -174,6 +174,7 @@ router.post("/userAdd", (req, res) => {
   });
 });
 
+// post new activities using AI
 router.post("/", async (req, res) => {
   const { activity } = req.body;
 
@@ -345,14 +346,17 @@ router.post("/task/add_new/:activity_id", (req, res) => {
       res.status(200).json({ message: "Task created successfully" });
     })
     .catch((err) => {
-      console.log(err.constraint);
       if (err.constraint === "unique_task_name_per_activity") {
-        return res
-          .status(409)
-          .json({ message: `${task_name} already exists!` });
+        return res.status(409).json({
+          success: false,
+          message: `${task_name} already exists!`,
+        });
       }
-      console.error("database error encountered: ", err);
-      res.status(500).json({ message: err });
+      res.status(500).json({
+        success: false,
+        message: "database error encountered: ",
+        err,
+      });
     });
 });
 
