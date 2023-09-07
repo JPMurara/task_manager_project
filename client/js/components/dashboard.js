@@ -53,140 +53,149 @@ function renderDashboard() {
 }
 
 function renderActivity(activity_id) {
-  const content = document.getElementById("activityCont");
-  content.innerHTML = ``;
-  axios
-    .get("/api/activity/get/" + activity_id)
-    .then((res) => {
-      if (res.data != null) {
-        // Create a div with class "action-panel"
-        const actionPanelDiv = document.createElement("div");
-        actionPanelDiv.classList.add("action-panel");
+    console.log(activity_id);
+    const content = document.getElementById("activityCont");
+    content.innerHTML = ``;
+    axios
+        .get("/api/activity/get/" + activity_id)
+        .then((res) => {
+            if (res.data != null) {
+                // Create a div with class "action-panel"
+                const actionPanelDiv = document.createElement("div");
+                actionPanelDiv.classList.add("action-panel");
 
-        // Create an h2 element with content
-        const h2Element = document.createElement("h2");
-        h2Element.textContent = res.data.activity_name ?? "-";
+                // Create an h2 element with content
+                const h2Element = document.createElement("h2");
+                h2Element.textContent = res.data.activity_name ?? "-";
 
-        // Create three buttons with icons
-        const addButton = document.createElement("button");
-        addButton.id = "add-button";
-        const addIcon = document.createElement("i");
-        addIcon.classList.add("fa-solid", "fa-user-plus");
-        addButton.appendChild(addIcon);
+                // Create three buttons with icons
+                const addButton = document.createElement("button");
+                addButton.id = "add-button";
+                const addIcon = document.createElement("i");
+                addIcon.classList.add("fa-solid", "fa-user-plus");
+                addButton.appendChild(addIcon);
 
-        const deleteButton = document.createElement("button");
-        deleteButton.id = "delete-button";
-        const deleteIcon = document.createElement("i");
-        deleteIcon.classList.add("fa-solid", "fa-trash-can");
-        deleteButton.appendChild(deleteIcon);
-        deleteButton.addEventListener("click", () => {
-          deleteActivity(res.data.activity_id);
-        });
+                const deleteButton = document.createElement("button");
+                deleteButton.id = "delete-button";
+                const deleteIcon = document.createElement("i");
+                deleteIcon.classList.add("fa-solid", "fa-trash-can");
+                deleteButton.appendChild(deleteIcon);
+                deleteButton.addEventListener("click", () => {
+                    deleteActivity(res.data.activity_id);
+                });
 
-        const updateButton = document.createElement("button");
-        updateButton.id = "update-button";
-        const updateIcon = document.createElement("i");
-        updateIcon.classList.add("fa-solid", "fa-pen-to-square");
-        updateButton.appendChild(updateIcon);
+                const updateButton = document.createElement("button");
+                updateButton.id = "update-button";
+                const updateIcon = document.createElement("i");
+                updateIcon.classList.add("fa-solid", "fa-pen-to-square");
+                updateButton.appendChild(updateIcon);
+                updateButton.addEventListener("click", () => {
+                    editActivity(res.data)
+                });
 
-        // Append the elements to the actionPanelDiv
-        actionPanelDiv.appendChild(h2Element);
-        actionPanelDiv.appendChild(addButton);
-        actionPanelDiv.appendChild(deleteButton);
-        actionPanelDiv.appendChild(updateButton);
+                // Append the elements to the actionPanelDiv
+                actionPanelDiv.appendChild(h2Element);
+                actionPanelDiv.appendChild(addButton);
+                actionPanelDiv.appendChild(deleteButton);
+                actionPanelDiv.appendChild(updateButton);
 
-        content.appendChild(actionPanelDiv);
+                content.appendChild(actionPanelDiv);
 
-        //create row
-        const row = document.createElement("row");
-        row.classList.add("row");
+                //create row
+                const row = document.createElement("row");
+                row.classList.add("row");
 
-        // Test this code and remove the old one after testing!
-        // Create an array of task status to create columns inside the loop
-        const columnNames = ["To-do", "Doing", "Done"];
-        // Iterate through the column names and create the columns
-        columnNames.forEach((columnName) => {
-          const column = document.createElement("div");
-          const header = document.createElement("h2");
-          const icon = document.createElement("i");
-          icon.setAttribute("class", "btnAddTask fas fa-plus-circle");
-          icon.style.float = "right";
-          //   header.innerHTML = `${columnName} <i class="fas fa-plus-circle" style="float: right;"></i>`;
-          header.innerHTML = `${columnName}`;
-          header.append(icon);
-          column.appendChild(header);
-          const separator = document.createElement("div");
-          separator.classList.add("separator");
-          column.appendChild(separator);
-          column.classList.add("column");
-          const list = document.createElement("ul");
-          list.classList.add("tasklistContainer");
-          list.classList.add(`${columnName.toLowerCase()}List`);
-          column.appendChild(list);
-          row.appendChild(column);
-          icon.addEventListener("click", () => addTask(activity_id));
-        });
+                // Test this code and remove the old one after testing!
+                // Create an array of task status to create columns inside the loop
+                const columnNames = ["To-do", "Doing", "Done"];
+                // Iterate through the column names and create the columns
+                columnNames.forEach((columnName) => {
+                    const column = document.createElement("div");
+                    const header = document.createElement("h2");
+                    const icon = document.createElement("i");
+                    icon.setAttribute("class", "btnAddTask fas fa-plus-circle");
+                    icon.style.float = "right";
+                    //   header.innerHTML = `${columnName} <i class="fas fa-plus-circle" style="float: right;"></i>`;
+                    header.innerHTML = `${columnName}`;
+                    header.append(icon);
+                    column.appendChild(header);
+                    const separator = document.createElement("div");
+                    separator.classList.add("separator");
+                    column.appendChild(separator);
+                    column.classList.add("column");
+                    const list = document.createElement("ul");
+                    list.classList.add("tasklistContainer");
+                    list.classList.add(`${columnName.toLowerCase()}List`);
+                    column.appendChild(list);
+                    row.appendChild(column);
+                    icon.addEventListener("click", () => addTask(activity_id));
+                });
 
-        content.append(row);
+                content.append(row);
 
-        //Render list for tasks
-        const todoList = document.querySelector(".to-doList");
-        const doingList = document.querySelector(".doingList");
-        const doneList = document.querySelector(".doneList");
+                //Render list for tasks
+                const todoList = document.querySelector(".to-doList");
+                const doingList = document.querySelector(".doingList");
+                const doneList = document.querySelector(".doneList");
 
-        res.data.tasks.forEach((task) => {
-          // Create <li> element
-          const listItem = document.createElement("li");
-          listItem.classList.add("member-item");
+                res.data.tasks.forEach((task) => {
+                    // Create <li> element
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("member-item");
 
-          // Create <span> element for task name
-          const taskName = document.createElement("span");
-          taskName.classList.add("member-name");
-          taskName.textContent = task.task_name;
+                    // Create <span> element for task name
+                    const taskName = document.createElement("span");
+                    taskName.classList.add("member-name");
+                    taskName.textContent = task.task_name;
 
-          // Create <button> element for remove
-          const editButton = document.createElement("button");
-          editButton.classList.add("edit-button");
+                    // Create <button> element for remove
+                    const editButton = document.createElement("button");
+                    editButton.classList.add("edit-button");
 
-          // Create <i> element for edit icon
-          const editTaskIcon = document.createElement("i");
-          editTaskIcon.classList.add("fa-solid", "fa-pen-to-square");
+                    // Create <i> element for edit icon
+                    const editTaskIcon = document.createElement("i");
+                    editTaskIcon.classList.add("fa-solid", "fa-pen-to-square");
 
-          // Append the trash icon to the remove button
-          editButton.appendChild(editTaskIcon);
+                    // Append the trash icon to the remove button
+                    editButton.appendChild(editTaskIcon);
 
-          editButton.addEventListener("click", () => {
-            editTask(task, activity_id);
-          });
+                    editButton.addEventListener("click", () => {
+                        editTask(task, activity_id);
+                    });
 
-          // Create <button> element for remove
-          const deleteTaskButton = document.createElement("button");
-          deleteTaskButton.classList.add("remove-button");
+                    // Create <button> element for remove
+                    const deleteTaskButton = document.createElement("button");
+                    deleteTaskButton.classList.add("remove-button");
 
-          // Create <i> element for edit icon
-          const deleteTaskIcon = document.createElement("i");
-          deleteTaskIcon.classList.add("fa-solid", "fa-trash-can");
+                    // Create <i> element for edit icon
+                    const deleteTaskIcon = document.createElement("i");
+                    deleteTaskIcon.classList.add("fa-solid", "fa-trash-can");
 
-          // Append the trash icon to the remove button
-          deleteTaskButton.appendChild(deleteTaskIcon);
+                    // Append the trash icon to the remove button
+                    deleteTaskButton.appendChild(deleteTaskIcon);
 
-          deleteTaskButton.addEventListener("click", () => {
-            deleteTask(task.task_id, activity_id);
-          });
+                    deleteTaskButton.addEventListener("click", () => {
+                        deleteTask(task.task_id, activity_id);
+                    });
 
-          // Append the member name and remove button to the list item
-          listItem.appendChild(taskName);
-          listItem.appendChild(editButton);
-          listItem.appendChild(deleteTaskButton);
+                    // Append the member name and remove button to the list item
+                    listItem.appendChild(taskName);
+                    listItem.appendChild(editButton);
+                    listItem.appendChild(deleteTaskButton);
 
-          // Append the list item to the appropriate list based on task status
-          if (task.tasks_status === "pending") {
-            todoList.appendChild(listItem);
-          } else if (task.tasks_status === "in_progress") {
-            doingList.appendChild(listItem);
-          } else if (task.tasks_status === "completed") {
-            doneList.appendChild(listItem);
-          }
+                    // Append the list item to the appropriate list based on task status
+                    if (task.tasks_status === "pending") {
+                        todoList.appendChild(listItem);
+                    } else if (task.tasks_status === "in_progress") {
+                        doingList.appendChild(listItem);
+                    } else if (task.tasks_status === "completed") {
+                        doneList.appendChild(listItem);
+                    }
+                });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
         });
       }
     })
@@ -544,6 +553,89 @@ function editTask(task, activity_id) {
         console.error(error);
       });
   });
+}
+
+function editActivity(activity) {
+    console.log(activity);
+    // Create elements
+    const dialog = document.createElement("dialog");
+
+    const form = document.createElement("form");
+    form.id = "editActivityForm";
+    form.innerHTML = `
+        <label for="edit_activity_name">Name:</label>
+        <input type="text" id="edit_activity_name" name="activity_name" value="${
+            activity.activity_name || ""
+        }">
+
+        <label for="team_id">Team:</label>
+        <select id="team_id" name="team_id">
+            <option value="">Select a team</option>
+        </select>
+
+        <input type="submit" id="saveActivity" value="Save">
+    `;
+    
+    const teamSelect = document.getElementById('team_id');
+  
+    // Fetch users from the server using your getAllUsers method or API endpoint
+    axios.get('/api/teams/getAll')
+      .then(res => {
+        console.log(res);
+        // Iterate through the users and create <option> elements
+        res.data.forEach(team => {
+          const option = document.createElement('option');
+          option.value = team.user_id; // Set the value to the user_id
+          option.text = team.team_name; // Set the text to the user's name
+          teamSelect.appendChild(option); // Append the option to the select list
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching teams:', error);
+      });
+
+    const closeActivityIcon = document.createElement("i");
+    closeActivityIcon.classList.add("fa-solid", "fa-rectangle-xmark");
+
+    // Add classes to elements for styling
+    dialog.classList.add("task-dialog");
+    closeActivityIcon.classList.add("close-button");
+    form.classList.add("dialog-form");
+
+    // Append form and button to dialog, then dialog to the document
+    dialog.append(form);
+    dialog.append(closeActivityIcon);
+    document.body.appendChild(dialog);
+
+    // Display the dialog when function is called
+    dialog.showModal();
+
+    // Close the dialog box when the button close is clicked
+    closeActivityIcon.addEventListener("click", function () {
+        dialog.close();
+    });
+
+    //WHEN CLICK SAVE, GET THE INFO AND PUT ON DB
+
+    document.getElementById("saveActivity").addEventListener("click", (e) => {
+        e.preventDefault();
+        const activityData = {
+            activity_name: document.getElementById("edit_activity_name").value,
+            team_id: parseInt(document.getElementById("team_id").value),
+        };
+
+        axios
+            .put("/api/activity/update/" + activity.activity_id, activityData)
+            .then((response) => {
+                dialog.close();
+                console.log(response.data);
+                document.body.removeChild(dialog);
+                renderActivity(activity.activity_id);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    });
 }
 
 window.renderActivity = renderActivity;

@@ -57,6 +57,7 @@ router.get("/get/:activity_id", (req, res) => {
           SELECT
             a.activity_id,
             a.activity_name,
+            a.team_id,
             t.id AS task_id,
             t.task_name,
             t.task_description,
@@ -78,6 +79,7 @@ router.get("/get/:activity_id", (req, res) => {
       const activity = {
         activity_id: result.rows[0].activity_id,
         activity_name: result.rows[0].activity_name,
+        team_id: result.rows[0].team_id,
         tasks: result.rows.map((row) => ({
           task_id: row.task_id,
           task_name: row.task_name,
