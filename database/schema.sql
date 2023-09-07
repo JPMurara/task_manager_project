@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS activities (
     activity_id SERIAL PRIMARY KEY,
     activity_name VARCHAR(255) NOT NULL,
     team_id INTEGER REFERENCES teams(team_id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INTEGER REFERENCES users(user_id)
 );
 
 -- DO and END define the code block (function) in postgres that creates the enumerated types if they dont already exist
@@ -53,3 +54,6 @@ CREATE TABLE IF NOT EXISTS tasks (
     completed_at TIMESTAMP,
     CONSTRAINT unique_task_name_per_activity UNIQUE (activity_id, task_name)
 );
+
+ALTER TABLE activities 
+ADD COLUMN user_id INTEGER REFERENCES users(user_id);

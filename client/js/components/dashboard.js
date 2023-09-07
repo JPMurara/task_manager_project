@@ -6,6 +6,9 @@ function renderDashboard() {
 
   const page = document.getElementById("page");
 
+  //Spinner
+    const spinner = document.createElement("div");
+    spinner.classList.add("spinner");
   const content = document.createElement("div");
   content.classList.add("content");
   content.id = "main_content";
@@ -16,6 +19,7 @@ function renderDashboard() {
   const errorContainer = document.createElement("div");
   errorContainer.classList.add("errorContainer");
   errorContainer.innerHTML = `
+
     <dialog class="dialog" id="formsContainerDialog">
       <p class="errorMessage"></p>
     </dialog>
@@ -44,21 +48,26 @@ function renderDashboard() {
     </form>
     `;
 
-  formsContainer.append(openai, userAddActivityForm);
-  content.append(formsContainer, errorContainer, activityContainer);
-  page.replaceChildren(content);
-  renderSidebarActivities();
-  getActivity();
-  postUserActivity();
+
+    formsContainer.append(openai, userAddActivityForm);
+    content.append(formsContainer, errorContainer, activityContainer, spinner);
+    page.replaceChildren(content);
+    renderSidebarActivities();
+    getActivity();
+    postUserActivity();
+
 }
 
 function renderActivity(activity_id) {
     console.log(activity_id);
     const content = document.getElementById("activityCont");
-    content.innerHTML = ``;
+    content.innerHTML = "";
+
+    const spinner = document.querySelector(".spinner");
     axios
         .get("/api/activity/get/" + activity_id)
         .then((res) => {
+            spinner.style.display = "block";
             if (res.data != null) {
                 // Create a div with class "action-panel"
                 const actionPanelDiv = document.createElement("div");
@@ -193,9 +202,11 @@ function renderActivity(activity_id) {
                     }
                 });
             }
+            spinner.style.display = "none";
         })
         .catch((err) => {
             console.log(err);
+            spinner.style.display = "none";
         });
       }
     })
@@ -319,27 +330,25 @@ function renderSidebarActivities() {
 
 // delete an activity
 function deleteActivity(activity_id) {
-  const errorDialog = document.querySelector("#formsContainerDialog");
-  const errorMessage = document.querySelector(".errorMessage");
-  const mainContent = document.querySelector("#main_content");
-  const activityHeader = document.querySelector(".activity_header");
-  const row = document.querySelector(".row");
-  axios
-    .delete("/api/activity/delete/" + activity_id)
-    .then((res) => {
-      renderDashboard();
-      // removes information about the deleted activity from the dashboard view
-      mainContent.removeChild(row);
-      mainContent.removeChild(activityHeader);
-    })
-    .catch((error) => {
-      // displays the error in the modal
-      errorDialog.showModal();
-      errorMessage.innerText = error.response.data.message;
-      setTimeout(() => {
-        errorDialog.close();
-      }, "3000");
-    });
+
+    const errorDialog = document.querySelector("#formsContainerDialog");
+    const errorMessage = document.querySelector(".errorMessage");
+    const mainContent = document.querySelector("#main_content");
+
+    axios
+        .delete("/api/activity/delete/" + activity_id)
+        .then((res) => {
+            renderDashboard();
+        })
+        .catch((error) => {
+            // displays the error in the modal
+            errorMessage.innerText = error.response;
+            errorDialog.showModal();
+            setTimeout(() => {
+                errorDialog.close();
+            }, "3000");
+        });
+
 }
 
 // delete an task
@@ -430,24 +439,29 @@ function postUserActivity() {
 
 //IF NO ACTIVITY TELL THE USER TO SHOW A MESSAGE
 function renderLastActivity() {
-  axios
-    .get("/api/activity/getLast")
-    .then((res) => {
-      console.log(res.data);
-      renderActivity(res.data.activity_id);
-    })
-    .catch((error) => {
-      const errorDialog = document.querySelector("#formsContainerDialog");
-      const errorMessage = document.querySelector(".errorMessage");
-      // displays the error in the modal (if activity already exists)
-      errorDialog.showModal();
-      errorMessage.innerText = error.response.data.message;
-      setTimeout(() => {
-        errorDialog.close();
-      }, "3000");
-      console.error("Error fetching the last activity:", error);
-      // Handle any other errors that may arise.
-    });
+
+    axios
+        .get("/api/activity/getLast")
+        .then((res) => {
+            renderActivity(res.data.activity_id);
+        })
+        .catch((error) => {
+            // No activity exists. Handle this case accordingly.
+            // For example, show a message to the user indicating no activities are present.
+            const content = document.getElementById("main_content");
+
+            //Intro Dashboard Message
+            const message = document.createElement("h3");
+            message.classList.add("no-activity-message");
+            message.textContent = error.response.data.message;
+
+            //Intro Dashboard Image
+            const image = document.createElement("img");
+            image.src = "../../styles/img/work.png";
+            content.append(message, image);
+            console.error("Error fetching the last activity:", error);
+        });
+
 }
 
 function editTask(task, activity_id) {
