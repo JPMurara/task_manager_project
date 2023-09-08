@@ -1,5 +1,5 @@
 #header-nav {
-  background-color: var(--pink);
+  background-color: var(--blue6);
 }
 
 .nav-list {
@@ -8,6 +8,7 @@
   padding: 1rem 0;
   justify-content: flex-end;
   align-items: center;
+  color: var(--grey4);
 }
 
 .nav-list li {
@@ -26,7 +27,7 @@
 
 .user-icon {
   font-size: 24px;
-  color: #333;
+  color: var(--grey4);
 }
 
 .dropdown-content {
@@ -39,56 +40,65 @@
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   right: 1rem;
+  background-color: var(--blue1);
 }
 
 .user-dropdown:hover .dropdown-content {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 #loginInfo {
   margin: 0;
+  cursor: default;
 }
 
 .dropdown-content li {
-  /* margin-left: 6px;
-  margin-bottom: 2px; */
   padding: 0.5rem;
   text-decoration: none;
-  color: #333;
-  /* width: 100%; */
+  color: var(--grey9);
 }
 
 .dropdown-content #logout:hover {
-  background-color: #70a7e6;
+  color: var(--blue4);
+  cursor: pointer;
 }
 
-/* style for the previous drop down
-.user-dropdown {
+footer {
+  background-color: var(--blue6);
   display: flex;
-  align-items: flex-end;  Align items vertically at the bottom 
-  margin-left: 0px;  Push the user icon to the right 
+  justify-content: space-around;
+  /* height: 50px;
+  margin-left: 50px; */
+  text-align: center;
+  padding: 0.5rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
-.dropdown-content p {
-  margin-left: 6px;
-  margin-bottom: 2px !important;
-  padding: 2px;
+
+.footer-content {
+  align-self: center;
+  color: white;
+  margin-left: 30px;
+  color: var(--grey4);
+}
+
+.footer-social {
+  display: flex;
+  list-style: none;
+}
+
+.footer-social a {
   text-decoration: none;
-  color: #333;
+  color: var(--grey4);
 }
-.dropdown-content a {
-  background: #4475ad;
-  height: 25px;
-  width: 60px;
-  padding: 8px;
-  text-decoration: none;
-  float: right;
-  border-top-left-radius: 4px;
+
+.footer-social li {
+  margin-right: 3rem;
 }
-.dropdown-content a svg {
-  display: block;
-  margin: 0 auto;
+
+.footer-social li:last-child {
+  margin-right: 0;
 }
-.dropdown-content a:hover {
-  background-color: #70a7e6;
-}
-*/
