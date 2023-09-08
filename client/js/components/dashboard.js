@@ -483,7 +483,9 @@ function renderLastActivity() {
 }
 
 function editTask(task, activity_id) {
-  console.log(task.task_id);
+  const errorDialog = document.querySelector("#formsContainerDialog");
+  const errorMessage = document.querySelector(".errorMessage");
+
   // Create elements
   const dialog = document.createElement("dialog");
 
@@ -582,13 +584,20 @@ function editTask(task, activity_id) {
         renderActivity(activity_id);
       })
       .catch((error) => {
+        errorDialog.showModal();
+        errorMessage.innerText = error.response.data.message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "3000");
         console.error(error);
       });
   });
 }
 
 function editActivity(activity) {
-  console.log(activity);
+  const errorDialog = document.querySelector("#formsContainerDialog");
+  const errorMessage = document.querySelector(".errorMessage");
+  const mainContent = document.querySelector("#main_content");
   // Create elements
   const dialog = document.createElement("dialog");
 
@@ -666,6 +675,11 @@ function editActivity(activity) {
         renderActivity(activity.activity_id);
       })
       .catch((error) => {
+        errorDialog.showModal();
+        errorMessage.innerText = error.response.data.message;
+        setTimeout(() => {
+          errorDialog.close();
+        }, "3000");
         console.error(error);
       });
   });
