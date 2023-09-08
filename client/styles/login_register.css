@@ -1,9 +1,11 @@
 #page {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--blue5);
 }
+
 #page h1 {
-    margin: auto;
+  margin: auto;
 }
 
 #formsContainer {
@@ -15,12 +17,12 @@
 }
 
 .form {
-    display: flex;
-    flex-direction: column;
-    border-radius: 0.3rem;
-    padding: 2rem;
-    margin: 0.3rem 0;
-    background-color: var(--pink);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.3rem;
+  padding: 2rem;
+  margin: 0.3rem 0;
+  background-color: var(--grey5);
 }
 
 .form h2 {
@@ -29,23 +31,23 @@
 }
 
 .submitBtn {
-    align-self: center;
-    width: 100%;
+  align-self: center;
+  width: 100%;
 }
 
 #loginFormMessage,
 #signupFormMessage {
-    color: var(--warning);
-    font-weight: bold;
+  color: var(--warning);
+  font-weight: bold;
 }
 
 .dialog {
-    /* position: relative; */
-    border-radius: 0.5rem;
-    background-color: var(--warning);
-    font-style: italic;
-    color: var(--darkLettersColor);
-    align-self: center;
+  /* position: relative; */
+  border-radius: 0.5rem;
+  background-color: var(--warning);
+  font-style: italic;
+  color: var(--darkLettersColor);
+  align-self: center;
 }
 
 @media (max-width: 550px) {

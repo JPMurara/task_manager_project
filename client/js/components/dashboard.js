@@ -1,5 +1,14 @@
 import { renderHeader } from "./header.js";
-
+function displayLoading() {
+    const loader = document.getElementById("loader-container");
+    // const page = document.getElementById("page");
+    // page.replaceChildren(loader);
+    loader.style.visibility = "visible";
+}
+function hideLoading() {
+    const loader = document.getElementById("loader-container");
+    loader.style.visibility = "hidden";
+}
 function renderDashboard() {
     //Always show the last activity when user click on Dashboard
     renderLastActivity();
@@ -54,7 +63,7 @@ function renderDashboard() {
     userAddActivityForm.innerHTML = `
     <form action="" id="userActivityForm">
       <input type="text" name="userActivity" id="userActivity" placeholder="Add your own activity..." required>
-      <button>Add</button>
+      <button>Add Activity</button>
     </form>
     `;
 
