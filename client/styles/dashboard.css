@@ -1,320 +1,325 @@
 #main_content {
-  margin: 50px;
-  margin-left: 200px;
-  padding: 1px 16px;
-  height: 1000px;
-  background-color: var(--blue5);
+    margin: 50px;
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 1000px;
+    background-color: var(--blue5);
+}
+
+/* No activities page */
+h3 {
+    font-size: 50px;
 }
 
 .formsContainer {
-  display: flex;
-  height: 60px;
-  background-color: var(--grey5);
-  border: 0px;
-  border-radius: 8px;
-  padding: 20px;
-  justify-content: space-around;
+    display: flex;
+    height: 60px;
+    background-color: var(--grey5);
+    border: 0px;
+    border-radius: 8px;
+    padding: 20px;
+    justify-content: space-around;
 }
 
 .openai,
 .userAddActivityForm {
-  width: 100%;
+    width: 100%;
 }
 
 .formsContainer input {
-  background-color: var(--grey1);
+    background-color: var(--grey1);
 }
 
 #formAI,
 #userActivityForm {
-  padding: 10px;
+    padding: 10px;
 }
 
 #message,
 #userActivity {
-  display: inline-block;
-  width: calc(95% - 130px);
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+    display: inline-block;
+    width: calc(95% - 130px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 button {
-  display: inline-block;
-  background-color: var(--blue4);
-  color: var(--grey4);
-  border: 0px;
-  border-radius: 4px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  margin: 2px;
-  /* width: 100px; /* set a standard width */
-  /* height: 40px; set a standard height */
-  /* text-align: center; to center the text inside the button */
-  /* line-height: 40px; to vertically center the text */
+    display: inline-block;
+    background-color: var(--blue4);
+    color: var(--grey4);
+    border: 0px;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 2px;
+    /* width: 100px; /* set a standard width */
+    /* height: 40px; set a standard height */
+    /* text-align: center; to center the text inside the button */
+    /* line-height: 40px; to vertically center the text */
 }
 
 button:hover {
-  background-color: var(--blue5);
-  color: var(--grey1);
+    background-color: var(--blue5);
+    color: var(--grey1);
 }
 
 .action-panel {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--grey5);
-  color: var(--blue5);
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  margin-bottom: 20px;
-  margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--grey5);
+    color: var(--blue5);
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .action-panel h2 {
-  font-size: 1.2rem;
-  margin: 0;
-  flex-grow: 1;
-  text-align: center;
-  text-transform: uppercase;
+    font-size: 1.2rem;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 .row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
 .column {
-  background-color: var(--grey5);
-  color: var(--blue5);
-  padding: 20px;
-  border-radius: 5px;
-  text-align: center;
+    background-color: var(--grey5);
+    color: var(--blue5);
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
 }
 
 .tasklistContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .tasklistContainer li {
-  background-color: var(--grey6);
-  color: var(--blue1);
-  text-transform: capitalize;
+    background-color: var(--grey6);
+    color: var(--blue1);
+    text-transform: capitalize;
 }
 
 .member-name {
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
 .remove-button,
 .edit-button {
-  background-color: var(--blue4);
-  color: var(--grey4);
-  border: none;
-  padding: 3px 10px;
-  cursor: pointer;
+    background-color: var(--blue4);
+    color: var(--grey4);
+    border: none;
+    padding: 3px 10px;
+    cursor: pointer;
 }
 
 .remove-button:hover,
 #delete-button:hover,
 .fa-trash-can:hover {
-  color: var(--warning);
+    color: var(--warning);
 }
 
 .activity_header,
 .activity_header h1 {
-  text-align: center;
-  padding: 20px;
+    text-align: center;
+    padding: 20px;
 }
 
 .separator {
-  border-top: 1px solid #ccc;
-  margin: 10px 0;
+    border-top: 1px solid #ccc;
+    margin: 10px 0;
 }
 
 /* DIALOG EDIT  */
 .task-dialog {
-  width: 500px;
-  border: 1px solid var(--grey1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  padding: 20px;
-  background-color: var(--grey4);
-  color: var(--blue5);
+    width: 500px;
+    border: 1px solid var(--grey1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 20px;
+    background-color: var(--grey4);
+    color: var(--blue5);
 }
 
 /* All input fields and select boxes */
 .dialog-form input,
 .dialog-form select,
 .dialog-form textarea {
-  padding: 10px;
-  border: 1px solid var(--grey1);
-  border-radius: 5px;
-  width: 100%;
-  box-sizing: border-box; /* Ensures padding and borders are included in the total width */
+    padding: 10px;
+    border: 1px solid var(--grey1);
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box; /* Ensures padding and borders are included in the total width */
 }
 
 /* Form inside dialog */
 .dialog-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 /* Close button for the dialog */
 .close-button {
-  position: absolute;
-  padding: 5px;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  font-size: 24px;
+    position: absolute;
+    padding: 5px;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
 }
 
 #saveActivity,
 #saveTask {
-  background-color: var(--blue4);
-  color: var(--grey4);
+    background-color: var(--blue4);
+    color: var(--grey4);
 }
 
 #saveActivity:hover,
 #saveTask:hover {
-  cursor: pointer;
-  background-color: var(--blue5);
-  color: var(--grey1);
+    cursor: pointer;
+    background-color: var(--blue5);
+    color: var(--grey1);
 }
 
 /* Labels for a clearer appearance */
 .dialog-form label {
-  font-weight: bold;
-  margin-bottom: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
 /* Spinner */
 .spinner {
-  border: 16px solid #98345439;
-  border-radius: 50%;
-  border-top: 16px solid #453553;
-  width: 50px;
-  height: 50px;
-  -js-animation: spin 1s linear infinite;
-  animation: spin 1s linear infinite;
+    border: 16px solid #98345439;
+    border-radius: 50%;
+    border-top: 16px solid #453553;
+    width: 50px;
+    height: 50px;
+    -js-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
 }
 
 @-js-keyframes spin {
-  0% {
-    -js-transform: rotate(0deg);
-  }
-  100% {
-    -js-transform: rotate(360deg);
-  }
+    0% {
+        -js-transform: rotate(0deg);
+    }
+    100% {
+        -js-transform: rotate(360deg);
+    }
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loader-container {
-  visibility: hidden;
-  z-index: 9999; /* This ensures it's on top of other elements */
-  position: fixed; /* Makes it positioned relative to the browser window */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.5
-  ); /* This gives a semi-transparent black background */
-  display: flex;
-  justify-content: center; /* These two lines center the spinner */
-  align-items: center;
+    visibility: hidden;
+    z-index: 9999; /* This ensures it's on top of other elements */
+    position: fixed; /* Makes it positioned relative to the browser window */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.5
+    ); /* This gives a semi-transparent black background */
+    display: flex;
+    justify-content: center; /* These two lines center the spinner */
+    align-items: center;
 }
 
 .null-container {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--blue5);
-  color: var(--grey4);
-  padding: 20px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--blue5);
+    color: var(--grey4);
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    align-items: center;
 }
 
 img {
-  width: 30%;
-  text-align: center;
+    width: 30%;
+    text-align: center;
 }
 
 ul {
-  padding-inline-start: 0;
+    padding-inline-start: 0;
 }
 
 .edit-button {
-  width: 60px;
+    width: 60px;
 }
 
 .remove-button {
-  width: 60px;
+    width: 60px;
 }
 
 /* Mobile */
 @media (max-width: 1077px) {
-  /* AI and manual container input */
-  .formsContainer {
-    flex-direction: column;
-    height: 150px;
-    padding: 5px;
-  }
+    /* AI and manual container input */
+    .formsContainer {
+        flex-direction: column;
+        height: 150px;
+        padding: 5px;
+    }
 
-  div.content {
-    margin: 0;
-    margin-top: 60px;
-    margin-left: 0;
-  }
+    div.content {
+        margin: 0;
+        margin-top: 60px;
+        margin-left: 0;
+    }
 
-  .action-panel {
-    display: flex;
-    flex-direction: column;
-  }
+    .action-panel {
+        display: flex;
+        flex-direction: column;
+    }
 
-  .activityButtons {
-    margin-top: 10px;
-  }
+    .activityButtons {
+        margin-top: 10px;
+    }
 
-  .edit-button {
-    width: 50px;
-  }
+    .edit-button {
+        width: 50px;
+    }
 
-  .remove-button {
-    width: 50px;
-  }
+    .remove-button {
+        width: 50px;
+    }
 
-  .row {
-    grid-template-columns: 1fr;
-  }
+    .row {
+        grid-template-columns: 1fr;
+    }
 
-  .activityButtons button {
-    width: 80px;
-  }
+    .activityButtons button {
+        width: 80px;
+    }
 
-  #activityCont {
-    padding-bottom: 100px;
-  }
+    #activityCont {
+        padding-bottom: 100px;
+    }
 }

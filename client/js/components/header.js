@@ -16,8 +16,8 @@ export function renderHeader() {
     logo.classList.add("logo");
 
     // Create a logo header
-    const logoHeader = document.createElement("h1");
-    logoHeader.textContent = "Colab Task Manager";
+    const logoHeader = document.createElement("img");
+    logoHeader.src = "../../styles/img/logo-no-background.png";
     logo.appendChild(logoHeader);
 
     navUl.append(logo);
