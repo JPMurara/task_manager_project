@@ -1,151 +1,158 @@
 #header-nav {
-    background-color: var(--pink);
+  background-color: var(--blue6);
 }
 
 .nav-list {
-    display: flex;
-    margin: 0;
-    padding: 1rem 0;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  margin: 0;
+  padding: 1rem 0;
+  justify-content: flex-end;
+  align-items: center;
+  color: var(--grey4);
 }
 
 .nav-list li {
-    list-style: none;
-    margin-right: 2rem;
+  list-style: none;
+  margin-right: 2rem;
 }
 
 .nav-list li:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .nav-list li:first-child {
-    margin-right: auto;
-    margin-left: 2rem;
+  margin-right: auto;
+  margin-left: 2rem;
 }
 
 .user-icon {
-    font-size: 24px;
-    color: #333;
+  font-size: 24px;
+  color: var(--grey4);
 }
 
 .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: var(--beige);
-    min-width: 160px;
-    height: 90px;
-    border: 0px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    right: 1rem;
+  display: none;
+  position: absolute;
+  background-color: var(--blue1);
+  min-width: 160px;
+  height: 90px;
+  border: 0px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  right: 1rem;
 }
 
 .user-dropdown:hover .dropdown-content {
-    display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 #loginInfo {
-    margin: 0;
+  margin: 0;
+  cursor: default;
 }
 
 .dropdown-content li {
-    /* margin-left: 6px;
-  margin-bottom: 2px; */
-    padding: 0.5rem;
-    text-decoration: none;
-    color: #333;
-    /* width: 100%; */
+  padding: 0.5rem;
+  text-decoration: none;
+  color: var(--grey9);
 }
 
 .dropdown-content #logout:hover {
-    background-color: #70a7e6;
+  color: var(--blue4);
+  cursor: pointer;
+}
+
+footer {
+  background-color: var(--blue6);
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  padding: 0.5rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-content {
+  align-self: center;
+  color: white;
+  margin-left: 30px;
+  color: var(--grey4);
+}
+
+.footer-social {
+  display: flex;
+  list-style: none;
+}
+
+.footer-social a {
+  text-decoration: none;
+  color: var(--grey4);
+}
+
+.footer-social li {
+  margin-right: 3rem;
+}
+
+.footer-social li:last-child {
+  margin-right: 0;
 }
 
 /* Burger icon styling */
 .burger {
-    display: none; /* Initially hidden on desktop */
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
+  display: none; /* Initially hidden on desktop */
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
 }
 
 .burger div {
-    width: 25px;
-    height: 3px;
-    background-color: white;
+  width: 25px;
+  height: 3px;
+  background-color: white;
 }
 
 /* Tablet */
 @media (max-width: 1024px) {
-    .nav-list {
-        padding: 1rem;
-    }
+  .nav-list {
+    padding: 1rem;
+  }
 
-    .nav-list li {
-        margin-right: 1.5rem;
-    }
+  .nav-list li {
+    margin-right: 1.5rem;
+  }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
-    .nav-list {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0.5rem;
-        align-items: center;
-        justify-content: center;
-    }
+  .nav-list {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .nav-list li {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
+  .nav-list li {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
 
-    .nav-list li:first-child {
-        margin-left: 0;
-        margin-right: 0;
-    }
+  .nav-list li:first-child {
+    margin-left: 0;
+    margin-right: 0;
+  }
 
-    .user-icon {
-        font-size: 20px;
-    }
+  .user-icon {
+    font-size: 20px;
+  }
 
-    .dropdown-content {
-        right: 0.5rem;
-    }
-    .burger {
-        display: flex;
-    }
+  .dropdown-content {
+    right: 0.5rem;
+  }
+  .burger {
+    display: flex;
+  }
 }
-
-/* style for the previous drop down
-.user-dropdown {
-  display: flex;
-  align-items: flex-end;  Align items vertically at the bottom 
-  margin-left: 0px;  Push the user icon to the right 
-}
-.dropdown-content p {
-  margin-left: 6px;
-  margin-bottom: 2px !important;
-  padding: 2px;
-  text-decoration: none;
-  color: #333;
-}
-.dropdown-content a {
-  background: #4475ad;
-  height: 25px;
-  width: 60px;
-  padding: 8px;
-  text-decoration: none;
-  float: right;
-  border-top-left-radius: 4px;
-}
-.dropdown-content a svg {
-  display: block;
-  margin: 0 auto;
-}
-.dropdown-content a:hover {
-  background-color: #70a7e6;
-}
-*/
