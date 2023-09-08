@@ -51,10 +51,10 @@ button {
   font-size: 16px;
   cursor: pointer;
   margin: 2px;
-  width: 100px; /* set a standard width */
-  height: 40px; /* set a standard height */
-  text-align: center; /* to center the text inside the button */
-  line-height: 40px; /* to vertically center the text */
+  /* width: 100px; /* set a standard width */
+  /* height: 40px; set a standard height */
+  /* text-align: center; to center the text inside the button */
+  /* line-height: 40px; to vertically center the text */
 }
 
 button:hover {
