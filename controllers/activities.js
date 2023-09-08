@@ -88,7 +88,6 @@ router.get("/get/:activity_id", (req, res) => {
           WHERE a.activity_id = $1 AND a.user_id = $2
           `;
 
-
     //Query the database with sql and values
     db.query(sql, [activity_id, userId])
         .then((result) => {
@@ -98,7 +97,7 @@ router.get("/get/:activity_id", (req, res) => {
             const activity = {
                 activity_id: result.rows[0].activity_id,
                 activity_name: result.rows[0].activity_name,
-              team_id: result.rows[0].team_id,
+                team_id: result.rows[0].team_id,
                 tasks: result.rows.map((row) => ({
                     task_id: row.task_id,
                     task_name: row.task_name,
@@ -116,7 +115,6 @@ router.get("/get/:activity_id", (req, res) => {
             console.error("database error encountered: ", err);
             res.status(500).json({ message: err });
         });
-
 });
 
 router.get("/getLast", (req, res) => {
@@ -387,35 +385,33 @@ router.post("/task/add_new/:activity_id", (req, res) => {
             message: "Failed to locate Activity",
         });
 
-
-  //Query the database with sql and values
-  db.query(sql, [
-    activity_id,
-    task_name,
-    task_description,
-    tasks_status,
-    task_priority,
-    assigned_to,
-    due_date,
-    created_by,
-  ])
-    .then(() => {
-      res.status(200).json({ message: "Task created successfully" });
-    })
-    .catch((err) => {
-      if (err.constraint === "unique_task_name_per_activity") {
-        return res.status(409).json({
-          success: false,
-          message: `${task_name} already exists!`,
+    //Query the database with sql and values
+    db.query(sql, [
+        activity_id,
+        task_name,
+        task_description,
+        tasks_status,
+        task_priority,
+        assigned_to,
+        due_date,
+        created_by,
+    ])
+        .then(() => {
+            res.status(200).json({ message: "Task created successfully" });
+        })
+        .catch((err) => {
+            if (err.constraint === "unique_task_name_per_activity") {
+                return res.status(409).json({
+                    success: false,
+                    message: `${task_name} already exists!`,
+                });
+            }
+            res.status(500).json({
+                success: false,
+                message: "database error encountered: ",
+                err,
+            });
         });
-      }
-      res.status(500).json({
-        success: false,
-        message: "database error encountered: ",
-        err,
-      });
-    });
-
 });
 
 //update activity
@@ -532,7 +528,6 @@ router.put("/task/update/:task_id", (req, res) => {
             message: "Task name is missing",
         });
 
-
     //ERROR HANDLING: checking if team_id was provided
     if (!task_id || task_id == 0)
         return res.status(400).json({
@@ -562,44 +557,43 @@ router.put("/task/update/:task_id", (req, res) => {
             console.error("database error encountered: ", err);
             res.status(500).json({ message: err });
         });
-
 });
 
 //route to delete activity
 router.delete("/delete/:activity_id", (req, res) => {
-  //activity_id initializing
-  const activity_id = req.params.activity_id;
-  // activity_id is a foreign key in the tasks table, so we delete the tasks first and after that the activity
-  const sql = `
+    //activity_id initializing
+    const activity_id = req.params.activity_id;
+    // activity_id is a foreign key in the tasks table, so we delete the tasks first and after that the activity
+    const sql = `
   DELETE FROM tasks where activity_id=$1
   `;
-  //ERROR HANDLING: checking if activity_id was provided
-  if (!activity_id || activity_id == 0)
-    return res.status(400).json({
-      success: false,
-      message: "Failed to locate Activity!",
-    });
-  db.query(sql, [activity_id]).then(() => {
-    //SQL query to delete the activity from DB
-    const sql = `
+    //ERROR HANDLING: checking if activity_id was provided
+    if (!activity_id || activity_id == 0)
+        return res.status(400).json({
+            success: false,
+            message: "Failed to locate Activity!",
+        });
+    db.query(sql, [activity_id]).then(() => {
+        //SQL query to delete the activity from DB
+        const sql = `
     DELETE FROM activities
     WHERE activity_id = $1`;
-    //Query the database with sql and values
-    db.query(sql, [activity_id])
-      .then(() => {
-        res.status(200).json({
-          success: true,
-          message: "Actvity deleted successfully",
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          success: false,
-          message: "Error",
-          err,
-        });
-      });
-  });
+        //Query the database with sql and values
+        db.query(sql, [activity_id])
+            .then(() => {
+                res.status(200).json({
+                    success: true,
+                    message: "Actvity deleted successfully",
+                });
+            })
+            .catch((err) => {
+                res.status(500).json({
+                    success: false,
+                    message: "Error",
+                    err,
+                });
+            });
+    });
 });
 
 //route to delete task
