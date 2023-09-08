@@ -202,3 +202,20 @@ div.content {
         transform: rotate(360deg);
     }
 }
+
+.null-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #535252;
+    border: 1px solid #535252;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    margin-top: 20px;
+    align-items: center;
+}
+img{
+    width: 40%;
+    text-align: center;
+}

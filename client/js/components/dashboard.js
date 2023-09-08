@@ -208,11 +208,6 @@ function renderActivity(activity_id) {
             console.log(err);
             spinner.style.display = "none";
         });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
 }
 
 function addTask(activity_id) {
@@ -439,7 +434,6 @@ function postUserActivity() {
 
 //IF NO ACTIVITY TELL THE USER TO SHOW A MESSAGE
 function renderLastActivity() {
-
     axios
         .get("/api/activity/getLast")
         .then((res) => {
@@ -450,15 +444,28 @@ function renderLastActivity() {
             // For example, show a message to the user indicating no activities are present.
             const content = document.getElementById("main_content");
 
-            //Intro Dashboard Message
-            const message = document.createElement("h3");
-            message.classList.add("no-activity-message");
-            message.textContent = error.response.data.message;
+            // //Intro Dashboard Message
+            // const message = document.createElement("h3");
+            // message.classList.add("no-activity-message");
+            // message.textContent = error.response.data.message;
 
-            //Intro Dashboard Image
-            const image = document.createElement("img");
-            image.src = "../../styles/img/work.png";
-            content.append(message, image);
+            // //Intro Dashboard Image
+            // const image = document.createElement("img");
+            // image.src = "../../styles/img/work.png";
+
+
+            const nullContainer = document.createElement('div');
+            nullContainer.classList.add('null-container');
+
+            const heading = document.createElement('h3');
+            heading.textContent = error.response.data.message;
+
+            const img = document.createElement('img');
+            img.src = '../../styles/img/work.png';
+
+            nullContainer.appendChild(heading);
+            nullContainer.appendChild(img);
+            content.append(nullContainer);
             console.error("Error fetching the last activity:", error);
         });
 
