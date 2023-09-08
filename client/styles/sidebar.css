@@ -3,7 +3,7 @@
   padding: 0;
   width: 200px;
   background-color: var(--blue4);
-  position: fixed;
+  position: absolute;
   height: 100%;
   overflow: auto;
   text-transform: capitalize;
@@ -26,4 +26,8 @@ i:hover {
 .activityContainer {
   display: flex;
   align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-bottom: 2px;
 }
