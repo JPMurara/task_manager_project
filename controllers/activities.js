@@ -228,7 +228,22 @@ router.post("/", async (req, res) => {
         });
     }
 
-    let data = null; // Initialize data outside of the try block.
+    console.log("activity ", activity);
+
+    const sql = `
+    INSERT INTO activities (activity_name, user_id)
+    VALUES ($1, $2)
+    RETURNING activity_id;
+    `;
+    const activityPromise = db
+        .query(sql, [activity, userId])
+        .then((result) => {
+            return result.rows[0].activity_id;
+        })
+        .catch((error) => {
+            console.error("database error encountered: ", error);
+            res.status(500).json({ message: "internal server error" });
+        });
 
     try {
         // Now make a call to OpenAI with the activity as a message
@@ -252,6 +267,7 @@ router.post("/", async (req, res) => {
         let attempts = 0; // Initialize an attempt counter
         const MAX_ATTEMPTS = 3; // Maximum times you want to try fetching from the API
         let JSONContent;
+        let data;
 
         do {
             const completion = await openai.chat.completions.create({
@@ -262,16 +278,7 @@ router.post("/", async (req, res) => {
 
             console.log(completion.choices[0].message.content);
 
-            const completionContent = completion.choices[0].message.content;
-
-            if (
-                !completionContent.startsWith("{") ||
-                !completionContent.endsWith("}")
-            ) {
-                throw new Error("Invalid response from OpenAI.");
-            }
-
-            JSONContent = JSON.parse(completionContent);
+            JSONContent = JSON.parse(completion.choices[0].message.content);
 
             console.log("JSONContent: ", JSONContent);
 
@@ -281,42 +288,6 @@ router.post("/", async (req, res) => {
 
             attempts++;
         } while (!isValidTasksList(JSONContent) && attempts < MAX_ATTEMPTS);
-    } catch (error) {
-        console.error(
-            "Error fetching tasks or communicating with OpenAI: ",
-            error
-        );
-        if (error.message === "Invalid response from OpenAI.") {
-            return res.status(400).json({
-                message: "Invalid input. Please provide a valid activity.",
-            });
-        }
-        return res.status(500).json({ message: "Internal server error" });
-    }
-
-    if (!data) {
-        // If data is still null or undefined, return an error.
-        console.error("Data is not defined.");
-        return res.status(500).json({ message: "Internal server error" });
-    }
-
-    try {
-        console.log("activity ", activity);
-
-        const sql = `
-            INSERT INTO activities (activity_name, user_id)
-            VALUES ($1, $2)
-            RETURNING activity_id;
-        `;
-        const activityPromise = await db
-            .query(sql, [activity, userId])
-            .then((result) => {
-                return result.rows[0].activity_id;
-            })
-            .catch((error) => {
-                console.error("database error encountered: ", error);
-                res.status(500).json({ message: "internal server error" });
-            });
 
         //SQL query to insert user into the database
         const tasksSql = `
@@ -334,9 +305,12 @@ router.post("/", async (req, res) => {
                 activity_id: activity_id,
             });
         });
-    } catch (dbError) {
-        console.error("Database insertion error: ", dbError);
-        return res.status(500).json({ message: "Internal server error" });
+    } catch (error) {
+        console.error(
+            "Error fetching tasks or communicating with OpenAI: ",
+            error
+        );
+        res.status(500).json({ message: "internal server error" });
     }
 });
 

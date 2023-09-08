@@ -183,15 +183,21 @@ div.content {
 
 /* Spinner */
 .spinner {
-    display: none;
-    border: 16px solid #f3f3f3;
+    border: 16px solid #98345439;
     border-radius: 50%;
-    border-top: 16px solid blue;
-    border-right: 16px solid green;
-    border-bottom: 16px solid red;
+    border-top: 16px solid #453553;
     width: 50px;
     height: 50px;
-    animation: spin 2s linear infinite;
+    -js-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+}
+@-js-keyframes spin {
+    0% {
+        -js-transform: rotate(0deg);
+    }
+    100% {
+        -js-transform: rotate(360deg);
+    }
 }
 
 @keyframes spin {
@@ -201,6 +207,24 @@ div.content {
     100% {
         transform: rotate(360deg);
     }
+}
+.loader-container {
+    visibility: hidden;
+    z-index: 9999; /* This ensures it's on top of other elements */
+    position: fixed; /* Makes it positioned relative to the browser window */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.5
+    ); /* This gives a semi-transparent black background */
+    display: flex;
+    justify-content: center; /* These two lines center the spinner */
+    align-items: center;
 }
 
 .null-container {
@@ -215,7 +239,7 @@ div.content {
     margin-top: 20px;
     align-items: center;
 }
-img{
+img {
     width: 40%;
     text-align: center;
 }
