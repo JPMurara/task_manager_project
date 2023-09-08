@@ -42,19 +42,19 @@
 }
 
 button {
-    display: inline-block;
-    background-color: var(--green600);
-    color: #fff;
-    border: 0px;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin: 2px;
-    width: 100px; /* set a standard width */
-    height: 40px; /* set a standard height */
-    text-align: center; /* to center the text inside the button */
-    line-height: 40px; /* to vertically center the text */
+  display: inline-block;
+  background-color: var(--green600);
+  color: #fff;
+  border: 0px;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 2px;
+  /* width: 100px; /* set a standard width */
+  /* height: 40px; set a standard height */
+  /* text-align: center; to center the text inside the button */
+  /* line-height: 40px; to vertically center the text */
 }
 
 button:hover {

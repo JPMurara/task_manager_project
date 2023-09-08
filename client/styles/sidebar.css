@@ -27,8 +27,8 @@ i:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid black;
-    border-radius: 5px;
+  /* border: 1px solid black; */
+  /* border-radius: 5px; */
     margin-bottom: 2px;
 }
 
@@ -54,4 +54,3 @@ i:hover {
         display: flex; /* make contents of activityContainer side by side */
         align-items: center;
     }
-}
