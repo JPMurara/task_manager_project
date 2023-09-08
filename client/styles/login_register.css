@@ -11,10 +11,10 @@
     justify-content: space-evenly;
     margin: 0 2rem;
     border-radius: 0.3rem;
+    margin-top: 20px;
 }
 
 .form {
-    align-items: flex-start;
     display: flex;
     flex-direction: column;
     border-radius: 0.3rem;
@@ -25,6 +25,7 @@
 
 .form h2 {
     align-self: center;
+    margin-bottom: 10px;
 }
 
 .submitBtn {
@@ -45,4 +46,11 @@
     font-style: italic;
     color: var(--darkLettersColor);
     align-self: center;
+}
+
+@media (max-width: 550px) {
+    #formsContainer {
+        flex-direction: column;
+        gap: 20px;
+    }
 }

@@ -1,14 +1,5 @@
 import { renderHeader } from "./header.js";
-function displayLoading() {
-    const loader = document.getElementById("loader-container");
-    // const page = document.getElementById("page");
-    // page.replaceChildren(loader);
-    loader.style.visibility = "visible";
-}
-function hideLoading() {
-    const loader = document.getElementById("loader-container");
-    loader.style.visibility = "hidden";
-}
+
 function renderDashboard() {
     //Always show the last activity when user click on Dashboard
     renderLastActivity();
@@ -81,6 +72,10 @@ function renderDashboard() {
 }
 
 function renderActivity(activity_id) {
+    const nullContainer = document.querySelector(".null-container");
+    if (nullContainer) {
+        nullContainer.remove();
+    }
     console.log(activity_id);
     const content = document.getElementById("activityCont");
     content.innerHTML = "";
@@ -122,11 +117,14 @@ function renderActivity(activity_id) {
                     editActivity(res.data);
                 });
 
+                //Create a div for the buttons
+                const activityButtons = document.createElement("div");
+                activityButtons.classList.add("activityButtons");
+                activityButtons.append(addButton, deleteButton, updateButton);
+
                 // Append the elements to the actionPanelDiv
                 actionPanelDiv.appendChild(h2Element);
-                actionPanelDiv.appendChild(addButton);
-                actionPanelDiv.appendChild(deleteButton);
-                actionPanelDiv.appendChild(updateButton);
+                actionPanelDiv.appendChild(activityButtons);
 
                 content.appendChild(actionPanelDiv);
 
@@ -460,20 +458,16 @@ function renderLastActivity() {
         .get("/api/activity/getLast")
         .then((res) => {
             renderActivity(res.data.activity_id);
+
+            const nullContainer = document.querySelector(".null-container");
+            if (nullContainer) {
+                nullContainer.remove();
+            }
         })
         .catch((error) => {
             // No activity exists. Handle this case accordingly.
             // For example, show a message to the user indicating no activities are present.
             const content = document.getElementById("main_content");
-
-            // //Intro Dashboard Message
-            // const message = document.createElement("h3");
-            // message.classList.add("no-activity-message");
-            // message.textContent = error.response.data.message;
-
-            // //Intro Dashboard Image
-            // const image = document.createElement("img");
-            // image.src = "../../styles/img/work.png";
 
             const nullContainer = document.createElement("div");
             nullContainer.classList.add("null-container");
@@ -681,6 +675,17 @@ function editActivity(activity) {
                 console.error(error);
             });
     });
+}
+
+function displayLoading() {
+    const loader = document.getElementById("loader-container");
+    // const page = document.getElementById("page");
+    // page.replaceChildren(loader);
+    loader.style.visibility = "visible";
+}
+function hideLoading() {
+    const loader = document.getElementById("loader-container");
+    loader.style.visibility = "hidden";
 }
 
 window.renderActivity = renderActivity;
