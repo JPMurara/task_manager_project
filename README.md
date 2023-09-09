@@ -31,7 +31,7 @@ This is the foundational wireframe that kickstarted our application's design. We
 ## User Stories
 
 Our project's features are guided by user stories, encapsulating the needs and expectations of our valued users.
-![user_stories1](./client/styles/img/Agile%20User%20Story%20Template.pdf)
+![user_stories1](./client/styles/img/userstories.png)
 
 ## Entity Relationship Diagram
 
