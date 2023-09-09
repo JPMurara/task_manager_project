@@ -16,8 +16,8 @@ export function renderHeader() {
     logo.classList.add("logo");
 
     // Create a logo header
-    const logoHeader = document.createElement("h1");
-    logoHeader.textContent = "Colab Task Manager";
+    const logoHeader = document.createElement("img");
+    logoHeader.src = "../../styles/img/logo-no-background.png";
     logo.appendChild(logoHeader);
 
     navUl.append(logo);
@@ -81,19 +81,19 @@ export function loginStatus() {
         });
 
     //Burger Icon
-    const navUl = document.querySelector(".nav-list");
+    // const navUl = document.querySelector(".nav-list");
 
-    const divBurger = document.createElement("div");
-    divBurger.classList.add("burger");
-    divBurger.addEventListener("click", toggleMenu());
+    // const divBurger = document.createElement("div");
+    // divBurger.classList.add("burger");
+    // divBurger.addEventListener("click", toggleMenu());
 
-    const div1 = document.createElement("div");
-    const div2 = document.createElement("div");
-    const div3 = document.createElement("div");
+    // const div1 = document.createElement("div");
+    // const div2 = document.createElement("div");
+    // const div3 = document.createElement("div");
 
-    divBurger.append(div1, div2, div3);
+    // divBurger.append(div1, div2, div3);
 
-    navUl.append(divBurger);
+    // navUl.append(divBurger);
 }
 
 function toggleMenu() {
