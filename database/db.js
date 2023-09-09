@@ -7,10 +7,11 @@ require("dotenv").config();
 
 // creates an instance of the DB connection pool. Pool is a mechanism used to manage and efficiently reuse DB connections. It keeps the DB connection and is not necessary to open/close connection at each DB interaction
 const db = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
     // user: "postgres",
-    host: "localhost",
-    database: "task_manager",
-    password: process.env.DB_PASSWORD,
+    // host: "localhost",
+    // database: "task_manager",
+    // password: process.env.DB_PASSWORD,
 });
 
 // !!!! Before running the code, make sure to enter in the terminal: CREATE DATABASE task_manager IF NOT EXISTS; !!!!
