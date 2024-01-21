@@ -30,6 +30,8 @@ app.use(
             createTableIfMissing: true,
         }),
         secret: process.env.EXPRESS_SESSION_SECRET_KEY,
+        resave: false,
+        saveUninitialized: false,
     })
 );
 
@@ -70,7 +72,7 @@ app.listen(port, async () => {
 
     try {
         // create the tables from schema.sql
-        // await createTables();
+        await createTables();
     } catch (err) {
         console.error("Error initializing database tables:", err);
     }
