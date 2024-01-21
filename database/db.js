@@ -16,18 +16,15 @@ const db = new pg.Pool({
 
 // !!!! Before running the code, make sure to enter in the terminal: CREATE DATABASE task_manager IF NOT EXISTS; !!!!
 //
-function createTables() {
+async function createTables() {
     try {
-        // reads the content of the schema.sql and stores it in the sql variable. The file content is interpreted as text encoded in UTF-8
         const sql = fs.readFileSync(__dirname + "/schema.sql", "utf8");
-        // established db connection and wait for it to happen before moving one
-        const client = db.connect();
-        // executes the querry and wait for it to happen before moing on
-        client.query(sql);
-        // released the db connection back to the connection pool to make it available for other operations
+        const client = await db.connect();
+        await client.query(sql);
         client.release();
     } catch (err) {
         console.error("Error creating tables:", err);
+        throw err; // Re-throw the error to handle it in the caller function
     }
 }
 
