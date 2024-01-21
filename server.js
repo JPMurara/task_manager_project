@@ -30,6 +30,8 @@ app.use(
             createTableIfMissing: true,
         }),
         secret: process.env.EXPRESS_SESSION_SECRET_KEY,
+        resave: false,
+        saveUninitialized: false,
     })
 );
 
